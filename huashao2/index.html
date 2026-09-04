@@ -123,6 +123,7 @@
 
     .postcard {
       position: relative;
+      min-height: 260px;
       padding: 32px 34px 44px;
       border: 12px solid var(--frame);
       border-bottom-width: 32px;
@@ -461,12 +462,45 @@
       .hero {
         grid-template-columns: 1fr;
         min-height: auto;
+        gap: clamp(24px, 5vw, 40px);
       }
 
       .postcard {
         transform: rotate(0deg);
-        padding: 28px 26px 38px;
+        min-height: 200px;
+        padding: 24px 22px 32px;
       }
+
+      .scribble {
+        left: 22px;
+        top: 24px;
+        font-size: 17px;
+        line-height: 1.45;
+        max-width: 180px;
+      }
+
+      .sunset {
+        top: 18px;
+        right: 18px;
+        width: 64px;
+        height: 64px;
+      }
+
+      .route {
+        left: 22px;
+        right: 22px;
+        bottom: 30px;
+        height: 74px;
+      }
+
+      .route::before,
+      .route::after {
+        width: 40px;
+        height: 40px;
+      }
+
+      .route::before { left: 20px; }
+      .route::after { right: 24px; }
 
       .question {
         grid-template-columns: 1fr;
@@ -480,6 +514,45 @@
     }
 
     @media (max-width: 520px) {
+      .postcard {
+        min-height: 190px;
+        padding: 22px 18px 32px;
+      }
+
+      .scribble {
+        left: 18px;
+        top: 22px;
+        font-size: 15px;
+        line-height: 1.4;
+        max-width: 215px;
+      }
+
+      .sunset {
+        top: auto;
+        right: 16px;
+        bottom: 30px;
+        width: 52px;
+        height: 52px;
+        z-index: 0;
+        border-width: 1.5px;
+      }
+
+      .route {
+        left: 18px;
+        right: 18px;
+        bottom: 36px;
+        height: 58px;
+      }
+
+      .route::before,
+      .route::after {
+        width: 30px;
+        height: 30px;
+      }
+
+      .route::before { left: 16px; }
+      .route::after { right: 20px; }
+
       .question,
       #result {
         padding: 20px 18px;
