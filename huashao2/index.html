@@ -405,14 +405,6 @@
       white-space: pre-line;
     }
 
-    #scoreline {
-      font-size: 14px;
-      line-height: 1.85;
-      letter-spacing: .02em;
-      color: var(--muted);
-      white-space: pre-line;
-    }
-
     .egg-sub {
       display: block;
       margin-top: 12px;
@@ -455,7 +447,6 @@
     #result.egg #resultTitle { color: #f4e6cd; }
     #result.egg .egg-sub { color: rgba(143, 208, 195, .9); }
     #result.egg #resultText { color: #f2ece1; }
-    #result.egg #scoreline { color: rgba(143, 208, 195, .78); }
 
     @keyframes sweep { to { transform: rotate(360deg); } }
 
@@ -608,7 +599,6 @@
       <div id="resultLabel">YOUR TRAVEL PERSONA</div>
       <h2 id="resultTitle"></h2>
       <p id="resultText"></p>
-      <div id="scoreline"></div>
     </section>
   </main>
 
@@ -650,7 +640,7 @@
       const isEgg = Boolean(eggInput);
       if (isEgg) winner = eggInput.dataset.easterEgg;
 
-      paintResult(winner, isEgg, formatScores(scores));
+      paintResult(winner, isEgg);
     }
 
     // 隐藏结局：选中即揭晓，不必答完 5 题，也不必点按钮
@@ -658,17 +648,10 @@
       const answers = [...document.querySelectorAll('input[type="radio"]:checked')];
       const scores = Object.fromEntries(priority.map(n => [n, 0]));
       answers.forEach(input => scores[input.value] += 2);
-      paintResult(name, true, formatScores(scores));
+      paintResult(name, true);
     }
 
-    function formatScores(scores) {
-      return Object.entries(scores)
-        .filter(([, score]) => score > 0)
-        .map(([name, score]) => `${name} ${score}分`)
-        .join(' · ');
-    }
-
-    function paintResult(winner, isEgg, detail) {
+    function paintResult(winner, isEgg) {
       const label = document.getElementById('resultLabel');
       const title = document.getElementById('resultTitle');
 
@@ -681,11 +664,6 @@
       }
 
       document.getElementById('resultText').textContent = isEgg ? eggProfiles[winner] : profiles[winner];
-      document.getElementById('scoreline').textContent = isEgg
-        ? (detail
-            ? `隐藏结局已解锁 · 你在第 2 题选了「直接开找」\n（当前计分：${detail}）`
-            : '隐藏结局已解锁 · 你在第 2 题选了「直接开找」')
-        : detail;
       document.getElementById('hint').textContent = '';
 
       const result = document.getElementById('result');
