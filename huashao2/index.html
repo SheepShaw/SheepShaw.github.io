@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>测一测：你是《花少2》里的谁？</title>
+  <style>
+    :root {
+      --base: #e8dcc8;
+      --card: #fffdf8;
+      --frame: #fffaf5;
+      --ink: #2b1d16;
+      --muted: #6f5a45;
+      --accent-orange: #d77b50;
+      --accent-teal: #4c6b6a;
+      --shadow: rgba(32, 18, 8, .22);
+      --soft-shadow: rgba(32, 18, 8, .13);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Songti SC", "STSong", "SimSun", "Noto Serif CJK SC", "Source Han Serif SC", Georgia, serif;
+      color: var(--ink);
+      background-color: var(--base);
+      background-image:
+        radial-gradient(circle at 18% -5%, rgba(215, 123, 80, .26) 0 14rem, transparent 20rem),
+        radial-gradient(circle at 80% 8%, rgba(76, 107, 106, .2) 0 10rem, transparent 18rem),
+        linear-gradient(150deg, #f6e6c9 0%, #e8d4b6 45%, #dcae8a 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, .16) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, .05) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mix-blend-mode: overlay;
+      opacity: .26;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: clamp(28px, 5vw, 64px) 0 56px;
+    }
+
+    /* ---------- 首屏 ---------- */
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: clamp(20px, 4vw, 58px);
+      align-items: end;
+      min-height: 420px;
+    }
+
+    .stamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(45, 24, 12, .38);
+      background: rgba(255, 255, 255, .82);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .16em;
+      transform: rotate(-3deg);
+      box-shadow: 0 6px 16px var(--soft-shadow);
+    }
+
+    h1 {
+      margin: 22px 0 16px;
+      font-size: clamp(38px, 7.4vw, 82px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+
+    .subtitle {
+      max-width: 620px;
+      margin: 0;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.95;
+      color: var(--muted);
+    }
+
+    .start {
+      margin-top: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 28px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff9f5;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-teal));
+      font: 700 16px/1 inherit;
+      letter-spacing: .06em;
+      cursor: pointer;
+      box-shadow: 0 18px 44px rgba(215, 123, 80, .32);
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+
+    .start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 54px rgba(215, 123, 80, .4);
+    }
+
+    /* ---------- 拍立得明信片 ---------- */
+
+    .postcard {
+      position: relative;
+      padding: 32px 34px 44px;
+      border: 12px solid var(--frame);
+      border-bottom-width: 32px;
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 30px 70px var(--shadow);
+      transform: rotate(2deg);
+      isolation: isolate;
+    }
+
+    .postcard::after {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(76, 107, 106, .38);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    .sunset {
+      position: absolute;
+      inset: 28px 28px auto auto;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffd9a7, var(--accent-orange) 65%);
+      border: 2px solid rgba(45, 24, 12, .38);
+    }
+
+    .route {
+      position: absolute;
+      left: 34px;
+      right: 34px;
+      bottom: 42px;
+      height: 110px;
+      border-bottom: 3px solid rgba(76, 107, 106, .42);
+      border-radius: 0 0 50% 40%;
+    }
+
+    .route::before,
+    .route::after {
+      content: "";
+      position: absolute;
+      width: 58px;
+      height: 58px;
+      border: 3px solid rgba(76, 107, 106, .38);
+      border-bottom: 0;
+      border-radius: 50% 50% 0 0;
+      bottom: -3px;
+    }
+
+    .route::before { left: 34px; }
+    .route::after { right: 38px; }
+
+    .scribble {
+      position: absolute;
+      left: 30px;
+      top: 34px;
+      font-size: 22px;
+      line-height: 1.4;
+      color: var(--accent-teal);
+      max-width: 210px;
+      transform: rotate(-4deg);
+    }
+
+    /* ---------- 题目卡片 ---------- */
+
+    .quiz {
+      margin-top: clamp(34px, 6vw, 88px);
+      display: grid;
+      gap: 28px;
+    }
+
+    .question {
+      position: relative;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 10px solid var(--frame);
+      border-bottom-width: 28px;
+      box-shadow: 0 22px 52px var(--soft-shadow);
+      padding: clamp(22px, 3.6vw, 36px);
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: clamp(14px, 3vw, 28px);
+    }
+
+    .question::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(76, 107, 106, .22);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    .num {
+      position: relative;
+      z-index: 1;
+      width: 68px;
+      height: 68px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      color: var(--accent-orange);
+      font-size: 24px;
+      font-weight: 800;
+      background: #f4e4c6;
+      box-shadow: 5px 5px 0 rgba(45, 24, 12, .14);
+    }
+
+    .question h2 {
+      margin: 0 0 18px;
+      font-size: clamp(20px, 2.7vw, 28px);
+      line-height: 1.45;
+      letter-spacing: -.02em;
+      color: var(--ink);
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1.5px solid rgba(69, 45, 21, .18);
+      background: rgba(255, 255, 255, .58);
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .option input {
+      flex: none;
+      margin: 4px 0 0;
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent-teal);
+      cursor: pointer;
+    }
+
+    .option span {
+      flex: 1;
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .option:hover {
+      transform: translateX(3px);
+      border-color: rgba(76, 107, 106, .55);
+      background: rgba(255, 255, 255, .85);
+    }
+
+    /* 选中态：整块填色 + 左侧色条，不靠字重变化，避免文字宽度跳动 */
+    .option:has(input:checked) {
+      background: rgba(215, 123, 80, .14);
+      border-color: var(--accent-orange);
+      box-shadow: inset 4px 0 0 var(--accent-orange);
+    }
+
+    /* 不支持 :has() 的老浏览器降级：至少保证文字变色 */
+    .option input:checked + span,
+    .option:has(input:checked) span {
+      color: #7d3a1c;
+      font-weight: 600;
+    }
+
+    /* ---------- 操作区 ---------- */
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 34px 0 0;
+    }
+
+    button.primary,
+    button.secondary {
+      min-height: 50px;
+      padding: 0 28px;
+      border: 0;
+      border-radius: 999px;
+      font: 700 15px/1 inherit;
+      letter-spacing: .06em;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-teal));
+      color: #fff9f5;
+      box-shadow: 0 14px 32px rgba(215, 123, 80, .3);
+    }
+
+    button.secondary {
+      background: rgba(255, 253, 248, .9);
+      color: var(--ink);
+      border: 1.5px solid rgba(76, 107, 106, .42);
+      box-shadow: 0 10px 24px var(--soft-shadow);
+    }
+
+    button.primary:hover,
+    button.secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    #hint {
+      width: 100%;
+      text-align: center;
+      min-height: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      color: var(--accent-orange);
+    }
+
+    /* ---------- 结果区 ---------- */
+
+    .result {
+      display: none;
+    }
+
+    .result.show {
+      display: grid;
+      gap: 14px;
+      animation: rise .55s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    #result {
+      position: relative;
+      overflow: hidden;
+      margin-top: 34px;
+      padding: clamp(26px, 4.4vw, 44px);
+      border-radius: var(--radius);
+      border: 10px solid var(--frame);
+      border-bottom-width: 28px;
+      background: var(--card);
+      box-shadow: 0 26px 60px var(--shadow);
+    }
+
+    #result::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(76, 107, 106, .22);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    #result > * { position: relative; z-index: 1; }
+
+    #resultLabel {
+      font-size: 12px;
+      letter-spacing: .3em;
+      color: rgba(76, 107, 106, .8);
+    }
+
+    #resultTitle {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.1;
+      letter-spacing: -.045em;
+      color: var(--accent-teal);
+    }
+
+    #resultText {
+      margin: 0;
+      max-width: 720px;
+      font-size: clamp(16px, 1.9vw, 19px);
+      line-height: 1.95;
+      color: var(--ink);
+      white-space: pre-line;
+    }
+
+    #scoreline {
+      font-size: 14px;
+      line-height: 1.85;
+      letter-spacing: .02em;
+      color: var(--muted);
+      white-space: pre-line;
+    }
+
+    .egg-sub {
+      display: block;
+      margin-top: 12px;
+      font-size: clamp(17px, 2.2vw, 23px);
+      font-weight: 400;
+      letter-spacing: .02em;
+      color: rgba(76, 107, 106, .85);
+    }
+
+    /* ---------- 隐藏结局彩蛋 ---------- */
+
+    #result.egg {
+      background: linear-gradient(160deg, #2f4a49 0%, #253b3c 58%, #1b2d2f 100%);
+      border-color: #f0e2cb;
+      box-shadow: 0 30px 68px rgba(47, 74, 73, .45);
+    }
+
+    #result.egg::after { border-color: rgba(160, 214, 205, .3); }
+
+    /* 雷达扫描：呼应「找人」 */
+    #result.egg::before {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -70px;
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      border: 1px solid rgba(160, 214, 205, .28);
+      box-shadow:
+        inset 0 0 0 42px rgba(160, 214, 205, .06),
+        inset 0 0 0 84px rgba(160, 214, 205, .04);
+      background: conic-gradient(from 0deg, rgba(160, 214, 205, .3), transparent 24%);
+      animation: sweep 3.6s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #result.egg #resultLabel { color: #8fd0c3; }
+    #result.egg #resultTitle { color: #f4e6cd; }
+    #result.egg .egg-sub { color: rgba(143, 208, 195, .9); }
+    #result.egg #resultText { color: #f2ece1; }
+    #result.egg #scoreline { color: rgba(143, 208, 195, .78); }
+
+    @keyframes sweep { to { transform: rotate(360deg); } }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(22px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ---------- 移动端 ---------- */
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .postcard {
+        transform: rotate(0deg);
+        padding: 28px 26px 38px;
+      }
+
+      .question {
+        grid-template-columns: 1fr;
+      }
+
+      .num {
+        width: 54px;
+        height: 54px;
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .question,
+      #result {
+        padding: 20px 18px;
+        border-width: 8px;
+        border-bottom-width: 24px;
+      }
+
+      .option {
+        padding: 12px 15px;
+        gap: 12px;
+      }
+
+      .option span { font-size: 15px; }
+
+      button.primary,
+      button.secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <div class="stamp">TRAVEL TEST · SEASON 2</div>
+        <h1>测一测：你是《花少2》里的谁？</h1>
+        <p class="subtitle">五个高压旅行名场面，一秒照见你的团队人格：你会情绪外放、强势拍板、默默扛事，还是把大家重新拉回同一辆车？</p>
+        <button class="start" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">开始测试</button>
+      </div>
+      <div class="postcard" aria-hidden="true">
+        <div class="sunset"></div>
+        <div class="scribble">London Bridge → Desert Sunset<br/>wish you were here</div>
+        <div class="route"></div>
+      </div>
+    </section>
+
+    <form id="quiz" class="quiz">
+      <section class="question">
+        <div class="num">01</div>
+        <div>
+          <h2>伦敦塔桥打卡时，大家因为路线和拍照节奏产生分歧，你会？</h2>
+          <div class="options">
+            <label class="option"><input type="radio" name="q1" value="许晴"><span>我不想扫兴，但我真的有点不开心，先表达自己的感受。</span></label>
+            <label class="option"><input type="radio" name="q1" value="宁静"><span>直接说：“到底走不走？别磨叽了。”</span></label>
+            <label class="option"><input type="radio" name="q1" value="郑爽"><span>默默查路线、安排时间，但越安排越紧张。</span></label>
+            <label class="option"><input type="radio" name="q1" value="陈意涵"><span>拉大家合照：“来都来了，先拍一张再说！”</span></label>
+            <label class="option"><input type="radio" name="q1" value="井柏然"><span>观察谁情绪不对，先把人安抚住。</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="question">
+        <div class="num">02</div>
+        <div>
+          <h2>杨洋走丢了，团队开始慌乱，你第一反应是？</h2>
+          <div class="options">
+            <label class="option"><input type="radio" name="q2" value="郑爽"><span>立刻自责：“是不是我刚刚没有注意到？”</span></label>
+            <label class="option"><input type="radio" name="q2" value="井柏然"><span>先冷静分工：“你打电话，你原地等，我去找。”</span></label>
+            <label class="option"><input type="radio" name="q2" value="许晴"><span>情绪上来：“怎么会这样？大家刚刚为什么不看好人？”</span></label>
+            <label class="option"><input type="radio" name="q2" value="宁静" data-easter-egg="杨洋"><span>直接开找，不废话，边走边喊人。</span></label>
+            <label class="option"><input type="radio" name="q2" value="陈意涵"><span>一边找一边活跃气氛：“别慌，肯定就在附近。”</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="question">
+        <div class="num">03</div>
+        <div>
+          <h2>房车大战爆发，大家对座位、空间、休息方式都有意见，你会？</h2>
+          <div class="options">
+            <label class="option"><input type="radio" name="q3" value="宁静"><span>明确站出来说：“这个安排不合理，我不接受。”</span></label>
+            <label class="option"><input type="radio" name="q3" value="许晴"><span>觉得委屈但先忍着，之后找熟悉的人倾诉。</span></label>
+            <label class="option"><input type="radio" name="q3" value="郑爽"><span>努力协调所有人的需求，哪怕自己很累。</span></label>
+            <label class="option"><input type="radio" name="q3" value="杨洋"><span>主动让一步：“我都可以，你们先选。”</span></label>
+            <label class="option"><input type="radio" name="q3" value="毛阿敏"><span>像大姐一样拍板：“别吵了，就这么定。”</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="question">
+        <div class="num">04</div>
+        <div>
+          <h2>毛阿敏倒戈式地改变立场，原本支持你的人突然站到另一边，你会？</h2>
+          <div class="options">
+            <label class="option"><input type="radio" name="q4" value="许晴"><span>表面没事，心里非常受伤。</span></label>
+            <label class="option"><input type="radio" name="q4" value="宁静"><span>直接问清楚：“你刚才不是这么说的吧？”</span></label>
+            <label class="option"><input type="radio" name="q4" value="郑爽"><span>开始怀疑是不是自己哪里做得不好。</span></label>
+            <label class="option"><input type="radio" name="q4" value="井柏然"><span>理解她可能是想顾全大局，不继续追究。</span></label>
+            <label class="option"><input type="radio" name="q4" value="毛阿敏"><span>成年人本来就会根据局势调整，接受现实。</span></label>
+          </div>
+        </div>
+      </section>
+
+      <section class="question">
+        <div class="num">05</div>
+        <div>
+          <h2>沙漠谈话和解时，大家终于坐下来把话说开，你最可能说什么？</h2>
+          <div class="options">
+            <label class="option"><input type="radio" name="q5" value="许晴"><span>“我不是故意针对谁，我只是当时真的很难过。”</span></label>
+            <label class="option"><input type="radio" name="q5" value="宁静"><span>“有话就说开，别以后又翻旧账。”</span></label>
+            <label class="option"><input type="radio" name="q5" value="郑爽"><span>“如果我之前做得不好，我可以改。”</span></label>
+            <label class="option"><input type="radio" name="q5" value="陈意涵"><span>“其实大家都是想把旅程过好，我们抱一下吧。”</span></label>
+            <label class="option"><input type="radio" name="q5" value="毛阿敏"><span>“过去就过去了，后面大家互相照顾。”</span></label>
+          </div>
+        </div>
+      </section>
+    </form>
+
+    <div class="actions">
+      <button class="primary" type="button" onclick="showResult()">查看我的花少人格</button>
+      <button class="secondary" type="button" onclick="resetQuiz()">重新选择</button>
+      <div id="hint"></div>
+    </div>
+
+    <section id="result" class="result" aria-live="polite">
+      <div id="resultLabel">YOUR TRAVEL PERSONA</div>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <div id="scoreline"></div>
+    </section>
+  </main>
+
+  <script>
+    const profiles = {
+      "许晴": "你是许晴型人格。你很敏感，也很真诚，情绪来得快，但不是无理取闹，而是你很在意关系里的细节和态度。旅行里你最怕的不是辛苦，而是被忽视。",
+      "宁静": "你是宁静型人格。你不喜欢拐弯抹角，有问题就要当场解决。你的气场很强，讨厌含糊和委屈求全，是团队里最敢把话挑明的人。",
+      "郑爽": "你是郑爽型人格。你责任感很强，容易把事情往自己身上揽。你想照顾所有人，但也容易因此焦虑；越在乎，越容易把自己逼紧。",
+      "陈意涵": "你是陈意涵型人格。你是团队里的小太阳，擅长用行动和笑容化解尴尬。只要你在，气氛就不会太僵，路线再乱也能被你跑成风景。",
+      "毛阿敏": "你是毛阿敏型人格。你有大局观，也有长辈式的判断力。你会权衡局势，不一定永远站在同一边，但通常是为了让事情继续往前走。",
+      "井柏然": "你是井柏然型人格。你温和、体贴、会照顾别人情绪。你不一定抢着表达，但总是在关键时刻补位，是旅行团里的隐形稳定器。",
+      "杨洋": "你是杨洋型人格。你安静、克制、少说多做。你不太喜欢卷入冲突，更倾向于用配合和行动维持团队稳定。"
+    };
+
+    // 隐藏结局：第 2 题（杨洋走丢）选了「直接开找」的人，才能把杨洋找回来
+    const eggProfiles = {
+      "杨洋": "你是杨洋型人格。你安静、克制、少说多做。你不太喜欢卷入冲突，更倾向于用配合和行动维持团队稳定。\n而且你是真的去找他了。别人还在原地自责、分工、发火、打圆场，你已经边走边喊着冲出去了。所以他们找不到杨洋，你找到了。"
+    };
+
+    const priority = ["许晴", "宁静", "郑爽", "陈意涵", "毛阿敏", "井柏然", "杨洋"];
+
+    function showResult() {
+      const hint = document.getElementById('hint');
+      const answers = [...document.querySelectorAll('input[type="radio"]:checked')];
+      if (answers.length < 5) {
+        hint.textContent = `还差 ${5 - answers.length} 题，旅行团不允许有人掉队。`;
+        return;
+      }
+
+      const scores = Object.fromEntries(priority.map(name => [name, 0]));
+      answers.forEach(input => scores[input.value] += 2);
+
+      let winner = priority[0];
+      for (const name of priority) {
+        if (scores[name] > scores[winner]) winner = name;
+      }
+
+      const eggInput = answers.find(input => input.dataset.easterEgg);
+      const isEgg = Boolean(eggInput);
+      if (isEgg) winner = eggInput.dataset.easterEgg;
+
+      paintResult(winner, isEgg, formatScores(scores));
+    }
+
+    // 隐藏结局：选中即揭晓，不必答完 5 题，也不必点按钮
+    function showEgg(name) {
+      const answers = [...document.querySelectorAll('input[type="radio"]:checked')];
+      const scores = Object.fromEntries(priority.map(n => [n, 0]));
+      answers.forEach(input => scores[input.value] += 2);
+      paintResult(name, true, formatScores(scores));
+    }
+
+    function formatScores(scores) {
+      return Object.entries(scores)
+        .filter(([, score]) => score > 0)
+        .map(([name, score]) => `${name} ${score}分`)
+        .join(' · ');
+    }
+
+    function paintResult(winner, isEgg, detail) {
+      const label = document.getElementById('resultLabel');
+      const title = document.getElementById('resultTitle');
+
+      if (isEgg) {
+        label.textContent = 'HIDDEN ENDING · 隐藏结局';
+        title.innerHTML = `恭喜你找到了杨洋<span class="egg-sub">${winner}型</span>`;
+      } else {
+        label.textContent = 'YOUR TRAVEL PERSONA';
+        title.textContent = `${winner}型`;
+      }
+
+      document.getElementById('resultText').textContent = isEgg ? eggProfiles[winner] : profiles[winner];
+      document.getElementById('scoreline').textContent = isEgg
+        ? (detail
+            ? `隐藏结局已解锁 · 你在第 2 题选了「直接开找」\n（当前计分：${detail}）`
+            : '隐藏结局已解锁 · 你在第 2 题选了「直接开找」')
+        : detail;
+      document.getElementById('hint').textContent = '';
+
+      const result = document.getElementById('result');
+      result.classList.toggle('egg', isEgg);
+      result.classList.add('show');
+      setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'center' }), 260);
+    }
+
+    // 第 2 题：选「直接开找」立刻揭晓；改选其他项则收起隐藏结局
+    document.querySelectorAll('input[name="q2"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const result = document.getElementById('result');
+        if (input.dataset.easterEgg) {
+          showEgg(input.dataset.easterEgg);
+        } else if (result.classList.contains('egg')) {
+          result.classList.remove('show', 'egg');
+        }
+      });
+    });
+
+    function resetQuiz() {
+      document.getElementById('quiz').reset();
+      document.getElementById('hint').textContent = '';
+      document.getElementById('result').classList.remove('show', 'egg');
+      document.getElementById('quiz').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
