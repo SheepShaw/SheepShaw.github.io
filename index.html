@@ -2,57 +2,35 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SheepShaw · 小工具合集</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SheepShaw · 小工具站</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh;
-    display: grid; place-items: center;
-    padding: 40px 20px;
-    font-family: "Songti SC", "STSong", "SimSun", Georgia, serif;
-    color: #2b1d16;
-    background:
-      radial-gradient(circle at 15% 0%, rgba(215,123,80,.24) 0 12rem, transparent 20rem),
-      radial-gradient(circle at 85% 10%, rgba(76,107,106,.18) 0 10rem, transparent 18rem),
-      linear-gradient(150deg, #f6e6c9 0%, #e8d4b6 50%, #dcae8a 100%);
-  }
-  main { width: min(560px, 100%); }
-  .stamp {
-    display: inline-block; padding: 6px 14px; border-radius: 999px;
-    border: 1.5px solid rgba(45,24,12,.34); background: rgba(255,255,255,.8);
-    font-size: 12px; letter-spacing: .18em; color: #6f5a45;
-    transform: rotate(-3deg);
-  }
-  h1 { margin: 20px 0 8px; font-size: clamp(34px, 7vw, 54px); letter-spacing: -.045em; }
-  .sub { margin: 0 0 32px; color: #6f5a45; font-size: 17px; line-height: 1.8; }
-  a.card {
-    display: block; margin-bottom: 14px; padding: 22px 26px;
-    border-radius: 20px; border: 8px solid #fffaf5; border-bottom-width: 22px;
-    background: #fffdf8; color: inherit; text-decoration: none;
-    box-shadow: 0 18px 44px rgba(32,18,8,.16);
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-  a.card:hover { transform: translateY(-3px); box-shadow: 0 26px 56px rgba(32,18,8,.24); }
-  a.card b { display: block; font-size: 21px; margin-bottom: 6px; }
-  a.card span { font-size: 14px; color: #6f5a45; line-height: 1.7; }
+  :root{--base:#e8dcc8;--card:#fffdf8;--ink:#2b1d16;--muted:#6f5a45;--teal:#4c6b6a;--orange:#d77b50}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:"Songti SC","Noto Serif CJK SC",Georgia,serif;color:var(--ink);
+    background:radial-gradient(circle at 20% 0%,rgba(215,123,80,.22) 0 14rem,transparent 20rem),linear-gradient(150deg,#f6e6c9,#e8d4b6 60%,#dcae8a);
+    display:grid;place-items:center;padding:40px}
+  .wrap{width:min(560px,100%);background:var(--card);border:10px solid #fffaf5;border-bottom-width:26px;
+    border-radius:22px;box-shadow:0 24px 56px rgba(32,18,8,.2);padding:clamp(28px,5vw,44px)}
+  h1{margin:0 0 4px;font-size:clamp(30px,6vw,46px);letter-spacing:-.04em}
+  p.tag{margin:0 0 22px;color:var(--muted);font-size:15px;letter-spacing:.04em}
+  ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  a{display:block;padding:16px 20px;border-radius:14px;border:1.5px solid rgba(69,45,21,.18);
+    background:rgba(255,255,255,.6);color:var(--ink);text-decoration:none;font-size:17px;font-weight:600;
+    transition:transform .2s,border-color .2s,background .2s}
+  a:hover{transform:translateX(3px);border-color:var(--teal);background:#fff}
+  a span{display:block;font-size:13px;font-weight:400;color:var(--muted);margin-top:3px}
 </style>
 </head>
 <body>
-  <main>
-    <div class="stamp">SHEEPSHAW · INDEX</div>
-    <h1>小工具合集</h1>
-    <p class="sub">静态单页，无需后端，打开即用。</p>
-
-    <a class="card" href="/huashao2/">
-      <b>花少 2 人格测试</b>
-      <span>五个高压旅行名场面，测你是《花儿与少年 2》里的谁。内含隐藏结局。</span>
-    </a>
-
-    <a class="card" href="/daodejing-reader/">
-      <b>《道德经》领读版</b>
-      <span>王弼本原文 / 译文 / 注疏 / 现代解读。</span>
-    </a>
+  <main class="wrap">
+    <h1>小羊的静态小站</h1>
+    <p class="tag">SHEEP SHAW · STATIC TOYS</p>
+    <ul>
+      <li><a href="huashao2/">测一测：你是《花少2》里的谁？<span>花少2人格测试 · 含隐藏结局彩蛋</span></a></li>
+      <li><a href="daodejing-reader/">《道德经》领读版<span>王弼本原文 / 译文 / 注疏 / 现代解读</span></a></li>
+      <li><a href="enneagram-test/">九型人格测试<span>单文件自包含</span></a></li>
+    </ul>
   </main>
 </body>
 </html>
