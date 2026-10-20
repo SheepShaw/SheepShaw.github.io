@@ -117,14 +117,15 @@
   }
 
   .enter{
-    margin-top:44px;
-    background:none;border:none;font:inherit;cursor:pointer;
-    color:var(--cinnabar);font-size:15px;letter-spacing:.3em;
-    padding:8px 0;opacity:0;transition:opacity .5s ease;
+    margin-top:56px;
+    background:none;border:1px solid var(--cinnabar);border-radius:2px;
+    font:inherit;cursor:pointer;
+    color:var(--cinnabar);font-size:20px;letter-spacing:.42em;
+    padding:15px 40px 15px 46px;
+    opacity:0;transition:opacity .6s ease,background .3s ease,color .3s ease;
   }
   .enter.on{opacity:1}
-  .enter::after{content:"";display:block;height:1px;width:100%;background:currentColor;opacity:.35;margin-top:7px;transform:scaleX(.35);transform-origin:left;transition:transform .4s ease}
-  .enter:hover::after{transform:scaleX(1)}
+  .enter.on:hover{background:var(--cinnabar);color:var(--paper)}
 
   /* ── 题目 ── */
   .qhead{
@@ -132,7 +133,6 @@
     margin-bottom:22px;
   }
   .qno{font-size:13px;letter-spacing:.34em;color:var(--cinnabar)}
-  .qep{font-size:12px;letter-spacing:.16em;color:var(--ink-light)}
   .qtext{
     font-size:18.5px;line-height:2.05;
     margin-bottom:34px;
@@ -152,8 +152,10 @@
   .opt + .opt{border-top:1px solid rgba(221,210,190,.55)}
   .opt:hover{border-left-color:var(--cinnabar);background:rgba(166,58,46,.035);transform:translateX(3px)}
   .opt .k{
-    flex:0 0 auto;font-size:14px;letter-spacing:.1em;color:var(--ink-light);
-    padding-top:3px;transition:color .25s ease;
+    flex:0 0 auto;
+    font-family:"Songti SC","SimSun",serif;
+    font-size:15px;letter-spacing:.1em;color:var(--ink-light);
+    padding-top:4px;transition:color .25s ease;
   }
   .opt:hover .k{color:var(--cinnabar)}
   .opt .t{font-size:17px;line-height:1.85}
@@ -172,7 +174,11 @@
   .opt.done .tick path{animation:draw .34s cubic-bezier(.5,0,.3,1) forwards}
 
   /* ── 结局 ── */
-  .ehead{font-size:12.5px;letter-spacing:.22em;color:var(--ink-light);margin-bottom:10px}
+  .ehead{
+    font-family:"Songti SC","SimSun",serif;
+    font-size:20px;font-weight:600;letter-spacing:.16em;
+    color:var(--cinnabar);margin-bottom:14px;
+  }
   .etitle{
     font-family:"Songti SC","SimSun",serif;
     font-size:29px;font-weight:700;letter-spacing:.08em;
@@ -189,20 +195,22 @@
     font-size:17.5px;line-height:1.95;color:var(--cinnabar);
   }
 
-  .sealwrap{display:flex;justify-content:flex-end;padding-right:6px}
+  .sealwrap{display:flex;justify-content:flex-end;margin:4px -8px 0 0}
   .seal{
     position:relative;
-    width:104px;height:104px;
-    border:3px solid var(--seal);border-radius:4px;
-    display:grid;grid-template-columns:1fr 1fr;place-items:center;
+    width:150px;height:150px;
+    border:4px solid var(--seal);border-radius:3px;
+    display:grid;
+    grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
     color:var(--seal);
-    font-family:"Songti SC","SimSun",serif;
-    font-size:25px;font-weight:700;line-height:1;letter-spacing:0;
-    transform:rotate(-4deg) scale(1.7);
+    font-family:"Songti SC","SimSun","STSong","SimSun-ExtB",serif;
+    font-size:54px;font-weight:700;line-height:1;letter-spacing:0;
+    transform:rotate(-5deg) scale(1.7);
     opacity:0;
     animation:stamp .62s .15s cubic-bezier(.2,1.35,.4,1) forwards;
     box-shadow:inset 0 0 0 1px rgba(156,50,38,.35);
   }
+  .seal span{display:grid;place-items:center;transform:translateY(1px)}
   .seal::after{
     content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;
     background:
@@ -217,20 +225,45 @@
     100%{opacity:1;transform:rotate(-4deg) scale(1)}
   }
 
-  .again{
-    display:block;margin:52px 0 0 auto;
-    background:none;border:none;font:inherit;cursor:pointer;
-    color:var(--ink-light);font-size:14px;letter-spacing:.28em;
-    transition:color .25s ease;
+  /* ── 结局页操作 ── */
+  .acts{
+    display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+    margin-top:48px;
   }
-  .again:hover{color:var(--cinnabar)}
+  .acts button{
+    background:none;border:1px solid var(--cinnabar);border-radius:2px;
+    font:inherit;cursor:pointer;
+    color:var(--cinnabar);font-size:15px;letter-spacing:.28em;
+    padding:12px 26px 12px 30px;
+    transition:background .25s ease,color .25s ease;
+  }
+  .acts button:hover{background:var(--cinnabar);color:var(--paper)}
+  .acts button.solid{background:var(--cinnabar);color:var(--paper)}
+  .acts button.solid:hover{background:#8E2F25;border-color:#8E2F25}
 
-  .footnote{
-    margin-top:40px;padding-top:16px;
-    border-top:1px solid var(--rule);
-    font-size:12.5px;letter-spacing:.06em;color:var(--ink-light);line-height:1.9;
+  /* ── 分享卡 ── */
+  .sharemask{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(22,18,14,.78);
+    display:flex;align-items:center;justify-content:center;
+    padding:26px 18px;overflow:auto;
   }
-  .footnote a{color:var(--cinnabar);text-decoration:none;border-bottom:1px solid rgba(166,58,46,.3)}
+  .sharebox{width:100%;max-width:400px;text-align:center}
+  .sharebox img{
+    width:100%;display:block;border-radius:2px;
+    box-shadow:0 14px 44px rgba(0,0,0,.45);
+  }
+  .sharetip{
+    margin:16px 0 14px;color:var(--paper);
+    font-size:13px;letter-spacing:.1em;opacity:.82;line-height:1.8;
+  }
+  .shareacts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .shareacts a,.shareacts button{
+    font-family:inherit;font-size:14px;letter-spacing:.2em;
+    padding:11px 22px;border-radius:2px;cursor:pointer;text-decoration:none;
+    border:1px solid var(--cinnabar);background:var(--cinnabar);color:var(--paper);
+  }
+  .shareacts .ghost{background:none;color:var(--paper);border-color:rgba(244,237,223,.45)}
 
   @media (max-width:560px){
     body{font-size:16px;line-height:1.95}
@@ -241,12 +274,17 @@
     .lead{margin-top:32px}
     .names li{height:46px;font-size:19px}
     .names .circle{width:142px;height:48px;margin-top:-24px;left:-6px}
+    .enter{font-size:18px;padding:13px 30px 13px 34px;margin-top:44px}
     .qtext{font-size:17px;margin-bottom:26px}
     .opt{padding:13px 34px 13px 11px;margin-left:-11px;gap:11px}
     .opt .t{font-size:16px;line-height:1.8}
+    .ehead{font-size:17px}
     .etitle{font-size:25px;margin-bottom:24px}
-    .seal{width:88px;height:88px;font-size:21px;border-width:2.5px}
+    .seal{width:104px;height:104px;font-size:37px;border-width:3px}
+    .sealwrap{margin-right:-4px}
     .equote{font-size:16.5px;margin:28px 0 34px}
+    .acts{margin-top:38px}
+    .acts button{font-size:14px;padding:11px 20px 11px 24px}
   }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important}
@@ -262,6 +300,7 @@
   "use strict";
 
   var TOTAL_EP = 47;
+  var CN = ["甲", "乙", "丙", "丁"];
 
   var Q = [
     {
@@ -478,12 +517,12 @@
     setThread(q.ep);
 
     var html =
-      '<div class="qhead"><span class="qno">' + q.no + '</span><span class="qep">' + q.epLabel + '</span></div>' +
+      '<div class="qhead"><span class="qno">' + q.no + '</span></div>' +
       '<p class="qtext">' + esc(q.text) + '</p>' +
       '<ul class="opts">' +
       q.opts.map(function(o, i){
         return '<li class="opt" data-i="' + i + '">' +
-          '<span class="k">' + o.k + '</span>' +
+          '<span class="k">' + CN[i] + '</span>' +
           '<span class="t">' + esc(o.t) + '</span>' +
           '<svg class="tick" viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 5.5"/></svg>' +
         '</li>';
@@ -511,26 +550,159 @@
     renderQ();
   }
 
+  /* ── 分享卡：把结局画成一张图 ── */
+  function sealChars(e){
+    return ((e.seal[0] || "") + (e.seal[1] || "")).split("");
+  }
+
+  function wrapLines(ctx, text, maxW){
+    var out = [], cur = "";
+    for (var i = 0; i < text.length; i++){
+      var ch = text[i];
+      if (cur && ctx.measureText(cur + ch).width > maxW){ out.push(cur); cur = ch; }
+      else cur += ch;
+    }
+    if (cur) out.push(cur);
+    return out;
+  }
+
+  function buildShareCanvas(e){
+    var W = 750, PAD = 78, maxW = W - PAD * 2;
+    var FAM_S = '"Songti SC","SimSun","STSong",serif';
+    var FAM_K = '"Kaiti SC","KaiTi","STKaiti",serif';
+
+    var mc = document.createElement("canvas").getContext("2d");
+    function collect(text, px, weight, fam, w){
+      mc.font = weight + " " + px + "px " + fam;
+      return wrapLines(mc, text, w);
+    }
+
+    var headTxt  = "你活到了" + e.epLabel.replace(/\s/g, "");
+    var headLines  = collect(headTxt, 26, "400", FAM_S, maxW);
+    var titleLines = collect(e.title, 54, "700", FAM_S, maxW);
+    var bodyLines  = [];
+    e.body.forEach(function(p){
+      bodyLines = bodyLines.concat(collect(p, 26, "400", FAM_K, maxW));
+    });
+    var quoteLines = collect(e.quote, 30, "600", FAM_S, maxW - 44);
+
+    var H = PAD * 2
+          + headLines.length * 40 + 30
+          + titleLines.length * 74 + 46
+          + bodyLines.length * 46 + 46
+          + quoteLines.length * 52 + 78
+          + 200;
+
+    var c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    var x = c.getContext("2d");
+
+    /* 纸 */
+    x.fillStyle = "#F4EDDF"; x.fillRect(0, 0, W, H);
+    var g = x.createRadialGradient(W * .18, H * .12, 0, W * .18, H * .12, W);
+    g.addColorStop(0, "rgba(160,138,104,.09)"); g.addColorStop(1, "rgba(160,138,104,0)");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.fillStyle = "#A63A2E"; x.fillRect(0, 0, W, 4);
+    x.fillStyle = "rgba(166,58,46,.30)"; x.fillRect(PAD - 26, PAD, 1, H - PAD * 2);
+
+    var y = PAD + 6;
+    x.textBaseline = "alphabetic";
+
+    /* 你活到了第 X 集 */
+    x.fillStyle = "#A63A2E";
+    x.font = "400 26px " + FAM_S;
+    headLines.forEach(function(l){ x.fillText(l, PAD, y + 26); y += 40; });
+
+    y += 30;
+    x.fillStyle = "#1F1B17";
+    x.font = "700 54px " + FAM_S;
+    titleLines.forEach(function(l){ x.fillText(l, PAD, y + 54); y += 74; });
+
+    y += 46;
+    x.fillStyle = "#3A342D";
+    x.font = "400 26px " + FAM_K;
+    bodyLines.forEach(function(l){ x.fillText(l, PAD, y + 26); y += 46; });
+
+    /* 金句 */
+    y += 46;
+    x.fillStyle = "rgba(166,58,46,.85)";
+    x.fillRect(PAD, y - 34, 4, quoteLines.length * 52 + 6);
+    x.fillStyle = "#A63A2E";
+    x.font = "600 30px " + FAM_S;
+    quoteLines.forEach(function(l){ x.fillText(l, PAD + 22, y + 30); y += 52; });
+
+    /* 朱印 */
+    var S = 190;
+    x.save();
+    x.translate(W - PAD - S / 2, H - PAD - S / 2);
+    x.rotate(-5 * Math.PI / 180);
+    x.strokeStyle = "#9C3226"; x.lineWidth = 6;
+    x.strokeRect(-S / 2, -S / 2, S, S);
+    x.fillStyle = "#9C3226";
+    x.font = "700 68px " + FAM_S;
+    x.textAlign = "center"; x.textBaseline = "middle";
+    var ch = sealChars(e), q = S / 4;
+    x.fillText(ch[0] || "", -q, -q + 2);
+    x.fillText(ch[1] || "",  q, -q + 2);
+    x.fillText(ch[2] || "", -q,  q + 2);
+    x.fillText(ch[3] || "",  q,  q + 2);
+    x.restore();
+    x.textAlign = "left"; x.textBaseline = "alphabetic";
+
+    /* 落款 */
+    x.fillStyle = "#7A6F63";
+    x.font = "400 22px " + FAM_S;
+    x.fillText("兰香如故 · 你在林府能活到第几集", PAD, H - PAD - 14);
+
+    return c;
+  }
+
+  function openShare(e){
+    var c = buildShareCanvas(e);
+    var url;
+    try { url = c.toDataURL("image/png"); }
+    catch (err) { alert("生成失败了，换个浏览器试试"); return; }
+
+    var mask = document.createElement("div");
+    mask.className = "sharemask";
+    mask.innerHTML =
+      '<div class="sharebox">' +
+        '<img alt="结果卡" src="' + url + '">' +
+        '<div class="sharetip">长按图片保存到相册</div>' +
+        '<div class="shareacts">' +
+          '<a download="兰香如故·' + e.epLabel.replace(/\s/g, "") + '·' + e.title + '.png" href="' + url + '">保存图片</a>' +
+          '<button class="ghost" type="button">关 闭</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(mask);
+
+    mask.addEventListener("click", function(ev){
+      if (ev.target === mask) mask.remove();
+    });
+    mask.querySelector(".ghost").addEventListener("click", function(){ mask.remove(); });
+  }
+
   /* ── 结局 ── */
   function showEnding(id){
     var e = E[id];
     setThread(e.ep);
 
     var html =
-      '<div class="ehead">' + e.epLabel + '</div>' +
+      '<div class="ehead">你活到了' + e.epLabel + '</div>' +
       '<h2 class="etitle">' + esc(e.title) + '</h2>' +
       '<div class="ebody">' + e.body.map(function(p){ return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
       '<blockquote class="equote">' + esc(e.quote) + '</blockquote>' +
       '<div class="sealwrap"><div class="seal">' +
-        '<span>' + esc(e.seal[0]) + '</span><span>' + esc(e.seal[1]) + '</span>' +
+        sealChars(e).map(function(c){ return '<span>' + esc(c) + '</span>'; }).join("") +
       '</div></div>' +
-      '<button class="again" id="again">重 新 入 府</button>' +
-      '<div class="footnote">共六问。你活到了' + e.epLabel + '。</div>';
+      '<div class="acts">' +
+        '<button type="button" class="solid" id="share">分 享 结 果</button>' +
+        '<button type="button" id="again">重 新 入 府</button>' +
+      '</div>';
 
     swap(html, function(){
-      document.getElementById("again").addEventListener("click", function(){
-        cover();
-      });
+      document.getElementById("again").addEventListener("click", cover);
+      document.getElementById("share").addEventListener("click", function(){ openShare(e); });
     });
   }
 
