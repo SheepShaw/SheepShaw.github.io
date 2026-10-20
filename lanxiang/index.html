@@ -16,10 +16,14 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{height:100%}
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body{
     background:var(--paper);
     color:var(--ink);
-    font-family:"Kaiti SC","KaiTi","STKaiti","Songti SC","SimSun",serif;
+    /* 楷体优先（Mac/iOS/Windows 均有）→ 思源/宋体兜底，避免 Android 掉进黑体 */
+    font-family:"Kaiti SC","KaiTi","STKaiti","楷体",
+                "Songti SC","STSong","SimSun","宋体",
+                "Noto Serif CJK SC","Source Han Serif SC","Source Han Serif CN",serif;
     font-size:17px;
     line-height:2;
     letter-spacing:.02em;
@@ -204,7 +208,8 @@
     display:grid;
     grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
     color:var(--seal);
-    font-family:"Kaiti SC","KaiTi","STKaiti","楷体","Kai","Songti SC","SimSun",serif;
+    font-family:"Kaiti SC","KaiTi","STKaiti","楷体","Kai",
+                "Songti SC","STSong","SimSun","宋体","Noto Serif CJK SC","Source Han Serif SC",serif;
     font-size:66px;font-weight:700;line-height:1;letter-spacing:0;
     transform:rotate(-5deg) scale(1.7);
     opacity:0;
@@ -267,46 +272,48 @@
   .shareacts .ghost{background:none;color:var(--paper);border-color:rgba(244,237,223,.45)}
 
   @media (max-width:560px){
-    body{font-size:16.5px;line-height:1.95}
+    body{font-size:17.5px;line-height:1.95}
     #stage{padding:52px 18px 60px}
     .sheet{padding-left:24px}
-    .htitle{font-size:30px;letter-spacing:.06em}
-    .intro{font-size:15px;line-height:2.05;margin-top:24px}
-    .lead{margin-top:30px;font-size:13.5px}
-    .names li{height:47px;font-size:19px}
-    .names .circle{width:142px;height:48px;margin-top:-24px;left:-4px}
-    .enter{font-size:19px;padding:15px 34px 15px 38px;margin:44px auto 0;letter-spacing:.36em}
+    .htitle{font-size:32px;letter-spacing:.05em}
+    .intro{font-size:16px;line-height:2.05;margin-top:24px}
+    .lead{margin-top:30px;font-size:14.5px}
+    .names li{height:50px;font-size:20.5px}
+    .names .circle{width:150px;height:50px;margin-top:-25px;left:-4px}
+    .enter{font-size:21px;padding:16px 36px 16px 40px;margin:46px auto 0;letter-spacing:.34em}
     .qhead{margin-bottom:18px}
-    .qtext{font-size:17.5px;line-height:2;margin-bottom:28px}
-    .opt{padding:14px 34px 14px 11px;margin-left:-11px;gap:11px}
-    .opt .k{font-size:14.5px}
-    .opt .t{font-size:16.5px;line-height:1.85}
-    .ehead{font-size:19px;letter-spacing:.14em}
-    .etitle{font-size:25px;margin-bottom:24px}
-    .ebody p{margin-bottom:17px}
-    .seal{width:108px;height:108px;font-size:48px;border-width:3px}
+    .qno{font-size:14px;letter-spacing:.3em}
+    .qtext{font-size:19px;line-height:2;margin-bottom:28px}
+    .opt{padding:15px 34px 15px 11px;margin-left:-11px;gap:12px}
+    .opt .k{font-size:16px;padding-top:5px}
+    .opt .t{font-size:18px;line-height:1.85}
+    .ehead{font-size:21px;letter-spacing:.13em}
+    .etitle{font-size:27px;margin-bottom:24px}
+    .ebody p{margin-bottom:18px}
+    .seal{width:116px;height:116px;font-size:52px;border-width:3px}
     .sealwrap{margin:6px -4px 0 0}
-    .equote{font-size:17px;line-height:1.95;margin:28px 0 34px;padding-left:17px}
-    .acts{margin-top:40px;gap:12px}
-    .acts button{font-size:17px;letter-spacing:.24em;padding:12px 24px 12px 28px}
-    .sharetip{font-size:13.5px}
-    .shareacts a,.shareacts button{font-size:14.5px;padding:11px 20px}
+    .equote{font-size:18.5px;line-height:1.95;margin:30px 0 34px;padding-left:17px}
+    .acts{margin-top:42px;gap:12px}
+    .acts button{font-size:18px;letter-spacing:.22em;padding:13px 24px 13px 28px}
+    .sharetip{font-size:14.5px}
+    .shareacts a,.shareacts button{font-size:15.5px;padding:12px 20px}
   }
   @media (max-width:400px){
+    body{font-size:17px}
     #stage{padding:46px 15px 54px}
     .sheet{padding-left:20px}
-    .htitle{font-size:27px}
-    .intro{font-size:14.5px}
-    .names li{height:44px;font-size:18px}
-    .names .circle{width:132px;height:46px;margin-top:-23px;left:-2px}
-    .enter{font-size:18px;padding:14px 28px 14px 32px;letter-spacing:.3em}
-    .qtext{font-size:17px}
-    .opt .t{font-size:16px}
-    .ehead{font-size:18px}
-    .etitle{font-size:23px}
-    .seal{width:96px;height:96px;font-size:42px}
-    .equote{font-size:16.5px}
-    .acts button{font-size:16px;letter-spacing:.2em;padding:12px 20px 12px 24px}
+    .htitle{font-size:29px}
+    .intro{font-size:15.5px}
+    .names li{height:47px;font-size:19.5px}
+    .names .circle{width:140px;height:47px;margin-top:-24px;left:-2px}
+    .enter{font-size:19.5px;padding:15px 30px 15px 34px;letter-spacing:.28em}
+    .qtext{font-size:18px}
+    .opt .t{font-size:17px}
+    .ehead{font-size:20px}
+    .etitle{font-size:25px}
+    .seal{width:104px;height:104px;font-size:46px}
+    .equote{font-size:17.5px}
+    .acts button{font-size:17.5px;letter-spacing:.18em;padding:13px 20px 13px 24px}
   }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important}
@@ -591,7 +598,7 @@
   function buildShareCanvas(e){
     var W = 750, PAD = 78, maxW = W - PAD * 2;
     var FAM_S = '"Songti SC","SimSun","STSong",serif';
-    var FAM_K = '"Kaiti SC","KaiTi","STKaiti",serif';
+    var FAM_K = '"Kaiti SC","KaiTi","STKaiti","楷体","Songti SC","SimSun","Noto Serif CJK SC",serif';
 
     var mc = document.createElement("canvas").getContext("2d");
     function collect(text, px, weight, fam, w){
