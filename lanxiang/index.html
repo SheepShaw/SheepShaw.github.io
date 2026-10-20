@@ -136,7 +136,7 @@
     opacity:0;transition:opacity .6s ease,background .3s ease,color .3s ease,box-shadow .3s ease;
   }
   .enter.on{opacity:1}
-  .enter.on:hover,.enter.on:active{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
+  .enter.on:active{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
 
   /* ── 题目 ── */
   .qhead{
@@ -161,15 +161,17 @@
     transition:border-color .25s ease,background .25s ease,transform .25s ease;
   }
   .opt + .opt{border-top:1px solid rgba(221,210,190,.55)}
-  .opt:hover{border-left-color:var(--cinnabar);background:rgba(166,58,46,.035);transform:translateX(3px)}
+  /* 悬停效果只在真鼠标设备生效：触屏点过会粘住 :hover，换题后同位置选项仍亮着 */
   .opt .k{
     flex:0 0 auto;
     font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
     font-size:15px;letter-spacing:.1em;color:var(--ink-light);
     padding-top:4px;transition:color .25s ease;
   }
-  .opt:hover .k{color:var(--cinnabar)}
   .opt .t{font-size:17px;line-height:1.85}
+  /* 换题瞬间禁掉悬停态，避免鼠标没动导致新题该位置选项亮着 */
+  .sheet.nohover .opt{border-left-color:transparent!important;background:none!important;transform:none!important}
+  .sheet.nohover .opt .k{color:var(--ink-light)!important}
   .opt.done{pointer-events:none;background:rgba(166,58,46,.05);border-left-color:var(--cinnabar)}
   .opt.done .k,.opt.done .t{color:var(--cinnabar)}
   .opt .tick{
@@ -206,8 +208,11 @@
     font-size:17.5px;line-height:1.95;color:var(--cinnabar);
   }
 
-  /* 朱印：浮在结局页右上方，半透明压住正文 */
-  .sealwrap{position:absolute;top:92px;right:-16px;z-index:5;pointer-events:none}
+  /* 朱印：钉死在屏幕右上角，与内容长短无关，不再随居中上下漂移 */
+  .sealwrap{
+    position:fixed;top:74px;z-index:5;pointer-events:none;
+    right:max(14px, calc((100vw - 600px) / 2 + 8px));
+  }
   .seal{
     position:relative;
     width:216px;height:216px;
@@ -252,9 +257,16 @@
     padding:12px 26px 12px 30px;
     transition:background .25s ease,color .25s ease;
   }
-  .acts button:hover{background:var(--cinnabar);color:var(--paper)}
   .acts button.solid{background:var(--cinnabar);color:var(--paper)}
-  .acts button.solid:hover{background:#8E2F25;border-color:#8E2F25}
+
+  /* 悬停态只给真鼠标，触屏一律不触发（避免点过之后高亮粘住） */
+  @media (hover:hover) and (pointer:fine){
+    .opt:hover{border-left-color:var(--cinnabar);background:rgba(166,58,46,.035);transform:translateX(3px)}
+    .opt:hover .k{color:var(--cinnabar)}
+    .enter.on:hover{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
+    .acts button:hover{background:var(--cinnabar);color:var(--paper)}
+    .acts button.solid:hover{background:#8E2F25;border-color:#8E2F25}
+  }
 
   /* ── 分享卡 ── */
   .sharemask{
@@ -303,7 +315,7 @@
     .ehead{font-size:19.5px;letter-spacing:.13em}
     .etitle{font-size:25px;margin-bottom:20px}
     .ebody p{margin-bottom:15px}
-    .sealwrap{top:66px;right:-10px}
+    .sealwrap{top:52px;right:6px}
     .seal{width:152px;height:152px;font-size:67px;border-width:4px}
     .equote{font-size:17px;line-height:1.9;margin:26px 0 30px;padding-left:16px}
     .acts{margin-top:38px;gap:12px}
@@ -328,7 +340,7 @@
     .ehead{font-size:18.5px}
     .etitle{font-size:23px;margin-bottom:18px}
     .ebody p{margin-bottom:14px}
-    .sealwrap{top:60px;right:-8px}
+    .sealwrap{top:46px;right:2px}
     .seal{width:138px;height:138px;font-size:60px;border-width:4px}
     .equote{font-size:16.5px;margin:24px 0 28px}
     .acts{margin-top:34px}
@@ -513,6 +525,8 @@
     sheet.classList.add("out");
     setTimeout(function(){
       sheet.innerHTML = html;
+      sheet.classList.add("nohover");
+      setTimeout(function(){ sheet.classList.remove("nohover"); }, 560);
       sheet.classList.remove("out");
       sheet.classList.add("in");
       requestAnimationFrame(function(){
