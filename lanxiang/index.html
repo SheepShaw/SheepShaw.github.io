@@ -61,8 +61,26 @@
   .sheet.out{opacity:0;transform:translateY(-9px)}
   .sheet.in{opacity:0;transform:translateY(9px)}
 
+  /* ── 首页 · 标题与引言 ── */
+  .htitle{
+    font-family:"Songti SC","SimSun",serif;
+    font-size:42px;line-height:1.4;font-weight:600;
+    letter-spacing:.08em;
+  }
+  .hsub{
+    margin-top:16px;
+    font-size:12px;letter-spacing:.42em;color:var(--ink-light);
+  }
+  .intro{
+    margin-top:28px;padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-size:15px;line-height:2.1;color:var(--ink-light);
+  }
+  .intro b{color:var(--cinnabar);font-weight:400}
+
   /* ── 卷首 · 名册 ── */
   .lead{
+    margin-top:40px;
     font-size:14px;color:var(--ink-light);letter-spacing:.14em;
     margin-bottom:26px;
   }
@@ -222,6 +240,9 @@
     body{font-size:16px;line-height:1.95}
     #stage{padding:52px 20px 60px}
     .sheet{padding-left:26px}
+    .htitle{font-size:32px}
+    .intro{font-size:14.5px;line-height:2}
+    .lead{margin-top:32px}
     .names li{height:46px;font-size:19px}
     .names .circle{width:142px;height:48px;margin-top:-24px;left:-6px}
     .qtext{font-size:17px;margin-bottom:26px}
@@ -424,6 +445,12 @@
   function cover(){
     setThread(0);
     var html =
+      '<h1 class="htitle">你在林府<br>能活到第几集</h1>' +
+      '<div class="hsub">兰 香 如 故</div>' +
+      '<p class="intro">全剧共四十七集。<br>' +
+        '这里只有六道题，七个下场。<br>' +
+        '答错当场收工，答对接着往下活——<br>' +
+        '活得最久的那个，也只是活到了最后一集。</p>' +
       '<div class="lead">今有新婢四名入林府</div>' +
       '<ul class="names">' +
         '<li class="picked"><span>许兰香</span>' +
@@ -505,8 +532,7 @@
         '<span>' + esc(e.seal[0]) + '</span><span>' + esc(e.seal[1]) + '</span>' +
       '</div></div>' +
       '<button class="again" id="again">重 新 入 府</button>' +
-      '<div class="footnote">共六问。你活到了' + e.epLabel + '。<br>' +
-        '还有另一个测试：<a href="https://sheepshaw.github.io/huashao2/" target="_blank" rel="noopener">花少 2 · 你是哪一个</a></div>';
+      '<div class="footnote">共六问。你活到了' + e.epLabel + '。</div>';
 
     swap(html, function(){
       document.getElementById("again").addEventListener("click", function(){
