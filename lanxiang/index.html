@@ -272,48 +272,57 @@
   .shareacts .ghost{background:none;color:var(--paper);border-color:rgba(244,237,223,.45)}
 
   @media (max-width:560px){
-    body{font-size:17.5px;line-height:1.95}
+    /* 首页保持大气，题目/结局页收紧 */
+    body{font-size:16.5px;line-height:1.9}
     #stage{padding:52px 18px 60px}
     .sheet{padding-left:24px}
+    /* 首页 */
     .htitle{font-size:32px;letter-spacing:.05em}
     .intro{font-size:16px;line-height:2.05;margin-top:24px}
     .lead{margin-top:30px;font-size:14.5px}
     .names li{height:50px;font-size:20.5px}
     .names .circle{width:150px;height:50px;margin-top:-25px;left:-4px}
     .enter{font-size:21px;padding:16px 36px 16px 40px;margin:46px auto 0;letter-spacing:.34em}
-    .qhead{margin-bottom:18px}
-    .qno{font-size:14px;letter-spacing:.3em}
-    .qtext{font-size:19px;line-height:2;margin-bottom:28px}
-    .opt{padding:15px 34px 15px 11px;margin-left:-11px;gap:12px}
-    .opt .k{font-size:16px;padding-top:5px}
-    .opt .t{font-size:18px;line-height:1.85}
-    .ehead{font-size:21px;letter-spacing:.13em}
-    .etitle{font-size:27px;margin-bottom:24px}
-    .ebody p{margin-bottom:18px}
-    .seal{width:116px;height:116px;font-size:52px;border-width:3px}
+    /* 题目页 */
+    .qhead{margin-bottom:16px}
+    .qno{font-size:13.5px;letter-spacing:.3em}
+    .qtext{font-size:17.5px;line-height:1.95;margin-bottom:24px}
+    .opt{padding:13px 34px 13px 11px;margin-left:-11px;gap:11px}
+    .opt .k{font-size:15px;padding-top:4px}
+    .opt .t{font-size:16.5px;line-height:1.8}
+    /* 结局页 */
+    .ehead{font-size:19.5px;letter-spacing:.13em}
+    .etitle{font-size:25px;margin-bottom:20px}
+    .ebody p{margin-bottom:15px}
+    .seal{width:106px;height:106px;font-size:47px;border-width:3px}
     .sealwrap{margin:6px -4px 0 0}
-    .equote{font-size:18.5px;line-height:1.95;margin:30px 0 34px;padding-left:17px}
-    .acts{margin-top:42px;gap:12px}
-    .acts button{font-size:18px;letter-spacing:.22em;padding:13px 24px 13px 28px}
-    .sharetip{font-size:14.5px}
-    .shareacts a,.shareacts button{font-size:15.5px;padding:12px 20px}
+    .equote{font-size:17px;line-height:1.9;margin:26px 0 30px;padding-left:16px}
+    .acts{margin-top:38px;gap:12px}
+    .acts button{font-size:18px;letter-spacing:.22em;padding:12px 24px 12px 28px}
+    .sharetip{font-size:14px}
+    .shareacts a,.shareacts button{font-size:15px;padding:12px 20px}
   }
   @media (max-width:400px){
-    body{font-size:17px}
+    body{font-size:16px;line-height:1.88}
     #stage{padding:46px 15px 54px}
     .sheet{padding-left:20px}
+    /* 首页：仍然大 */
     .htitle{font-size:29px}
     .intro{font-size:15.5px}
     .names li{height:47px;font-size:19.5px}
     .names .circle{width:140px;height:47px;margin-top:-24px;left:-2px}
     .enter{font-size:19.5px;padding:15px 30px 15px 34px;letter-spacing:.28em}
-    .qtext{font-size:18px}
-    .opt .t{font-size:17px}
-    .ehead{font-size:20px}
-    .etitle{font-size:25px}
-    .seal{width:104px;height:104px;font-size:46px}
-    .equote{font-size:17.5px}
-    .acts button{font-size:17.5px;letter-spacing:.18em;padding:13px 20px 13px 24px}
+    /* 题目/结局页：收紧 */
+    .qtext{font-size:17px;margin-bottom:22px}
+    .opt{padding:12px 30px 12px 10px;margin-left:-10px}
+    .opt .t{font-size:16px;line-height:1.78}
+    .ehead{font-size:18.5px}
+    .etitle{font-size:23px;margin-bottom:18px}
+    .ebody p{margin-bottom:14px}
+    .seal{width:96px;height:96px;font-size:42px}
+    .equote{font-size:16.5px;margin:24px 0 28px}
+    .acts{margin-top:34px}
+    .acts button{font-size:17.5px;letter-spacing:.18em;padding:12px 20px 12px 24px}
   }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important}
