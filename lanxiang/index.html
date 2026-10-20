@@ -57,7 +57,7 @@
     position:relative;z-index:1;
     min-height:100vh;min-height:100dvh;
     display:flex;align-items:center;justify-content:center;
-    padding:64px 26px 72px;
+    padding:30px 26px 52px;
   }
   .sheet{
     position:relative;width:100%;max-width:600px;
@@ -207,18 +207,18 @@
   }
 
   /* 朱印：浮在结局页右上方，半透明压住正文 */
-  .sealwrap{position:absolute;top:148px;right:-14px;z-index:5;pointer-events:none}
+  .sealwrap{position:absolute;top:92px;right:-16px;z-index:5;pointer-events:none}
   .seal{
     position:relative;
-    width:180px;height:180px;
-    border:5px solid var(--seal);border-radius:3px;
+    width:216px;height:216px;
+    border:6px solid var(--seal);border-radius:3px;
     display:grid;
     grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
     color:var(--seal);
     font-family:"Ma Shan Zheng","Kaiti SC","KaiTi","STKaiti","楷体","Kai",
                 "Noto Serif SC","Songti SC","STSong","SimSun","宋体",
                 "Noto Serif CJK SC","Source Han Serif SC",serif;
-    font-size:79px;font-weight:700;line-height:1;letter-spacing:0;
+    font-size:95px;font-weight:700;line-height:1;letter-spacing:0;
     transform:rotate(-5deg) scale(1.7);
     opacity:0;
     mix-blend-mode:multiply;
@@ -236,8 +236,8 @@
   }
   @keyframes stamp{
     0%{opacity:0;transform:rotate(-4deg) scale(1.7)}
-    58%{opacity:.62;transform:rotate(-4deg) scale(.955)}
-    100%{opacity:.62;transform:rotate(-4deg) scale(1)}
+    58%{opacity:.5;transform:rotate(-4deg) scale(.955)}
+    100%{opacity:.5;transform:rotate(-4deg) scale(1)}
   }
 
   /* ── 结局页操作 ── */
@@ -283,7 +283,7 @@
   @media (max-width:560px){
     /* 首页保持大气，题目/结局页收紧 */
     body{font-size:16.5px;line-height:1.9}
-    #stage{padding:52px 18px 60px}
+    #stage{padding:24px 18px 48px}
     .sheet{padding-left:24px}
     /* 首页 */
     .htitle{font-size:32px;letter-spacing:.05em}
@@ -303,8 +303,8 @@
     .ehead{font-size:19.5px;letter-spacing:.13em}
     .etitle{font-size:25px;margin-bottom:20px}
     .ebody p{margin-bottom:15px}
-    .sealwrap{top:100px;right:-8px}
-    .seal{width:127px;height:127px;font-size:56px;border-width:4px}
+    .sealwrap{top:66px;right:-10px}
+    .seal{width:152px;height:152px;font-size:67px;border-width:4px}
     .equote{font-size:17px;line-height:1.9;margin:26px 0 30px;padding-left:16px}
     .acts{margin-top:38px;gap:12px}
     .acts button{font-size:18px;letter-spacing:.22em;padding:12px 24px 12px 28px}
@@ -313,7 +313,7 @@
   }
   @media (max-width:400px){
     body{font-size:16px;line-height:1.88}
-    #stage{padding:46px 15px 54px}
+    #stage{padding:20px 15px 44px}
     .sheet{padding-left:20px}
     /* 首页：仍然大 */
     .htitle{font-size:29px}
@@ -328,8 +328,8 @@
     .ehead{font-size:18.5px}
     .etitle{font-size:23px;margin-bottom:18px}
     .ebody p{margin-bottom:14px}
-    .sealwrap{top:92px;right:-6px}
-    .seal{width:115px;height:115px;font-size:50px;border-width:4px}
+    .sealwrap{top:60px;right:-8px}
+    .seal{width:138px;height:138px;font-size:60px;border-width:4px}
     .equote{font-size:16.5px;margin:24px 0 28px}
     .acts{margin-top:34px}
     .acts button{font-size:17.5px;letter-spacing:.18em;padding:12px 20px 12px 24px}
@@ -413,7 +413,7 @@
 
   var E = {
     1: {
-      ep: 5, epLabel: "第 5 集", title: "你被杖毙了", seal: ["识字", "认账"],
+      ep: 5, epLabel: "第 5 集", title: "你被杖毙了", seal: ["血溅", "三尺"],
       body: [
         "赵星棠瞟了你一眼，笑了，说这丫头伶俐，留在正院伺候。",
         "第七天，你被支去库房取东西。回来的时候，箱笼已经被人翻开了——大奶奶丢的那枚金戒指，从你的铺盖底下被掏了出来。",
@@ -551,9 +551,9 @@
       var ghost = sheet.querySelector(".ghost-name");
       var btn = document.getElementById("enter");
 
-      setTimeout(function(){ circle.classList.add("go"); }, 400);
-      setTimeout(function(){ ghost.classList.add("show"); }, 1350);
-      setTimeout(function(){ btn.classList.add("on"); }, 1900);
+      btn.classList.add("on");                                   /* 一进页面就在 */
+      setTimeout(function(){ circle.classList.add("go"); }, 300);
+      setTimeout(function(){ ghost.classList.add("show"); }, 1250);
 
       btn.addEventListener("click", next);
     });
@@ -640,7 +640,7 @@
           + titleLines.length * 74 + 46
           + bodyLines.length * 46 + 46
           + quoteLines.length * 52 + 78
-          + 200;
+          + 250;
 
     var c = document.createElement("canvas");
     c.width = W; c.height = H;
@@ -681,15 +681,15 @@
     quoteLines.forEach(function(l){ x.fillText(l, PAD + 22, y + 30); y += 52; });
 
     /* 朱印 */
-    var S = 228;
+    var S = 250;
     x.save();
-    x.globalAlpha = .82;
+    x.globalAlpha = .66;
     x.translate(W - PAD - S / 2, H - PAD - S / 2);
     x.rotate(-5 * Math.PI / 180);
     x.strokeStyle = "#9C3226"; x.lineWidth = 7;
     x.strokeRect(-S / 2, -S / 2, S, S);
     x.fillStyle = "#9C3226";
-    x.font = "700 100px " + FAM_SEAL;
+    x.font = "700 110px " + FAM_SEAL;
     x.textAlign = "center"; x.textBaseline = "middle";
     var ch = sealChars(e), q = S / 4;
     x.fillText(ch[0] || "", -q, -q + 2);
