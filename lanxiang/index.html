@@ -118,14 +118,15 @@
 
   .enter{
     margin-top:56px;
-    background:none;border:1px solid var(--cinnabar);border-radius:2px;
+    background:var(--cinnabar);border:1px solid var(--cinnabar);border-radius:2px;
     font:inherit;cursor:pointer;
-    color:var(--cinnabar);font-size:20px;letter-spacing:.42em;
-    padding:15px 40px 15px 46px;
-    opacity:0;transition:opacity .6s ease,background .3s ease,color .3s ease;
+    color:var(--paper);font-size:21px;font-weight:700;letter-spacing:.42em;
+    padding:16px 42px 16px 48px;
+    box-shadow:0 6px 22px rgba(166,58,46,.22);
+    opacity:0;transition:opacity .6s ease,background .3s ease,color .3s ease,box-shadow .3s ease;
   }
   .enter.on{opacity:1}
-  .enter.on:hover{background:var(--cinnabar);color:var(--paper)}
+  .enter.on:hover,.enter.on:active{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
 
   /* ── 题目 ── */
   .qhead{
@@ -203,8 +204,8 @@
     display:grid;
     grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
     color:var(--seal);
-    font-family:"Songti SC","SimSun","STSong","SimSun-ExtB",serif;
-    font-size:54px;font-weight:700;line-height:1;letter-spacing:0;
+    font-family:"Kaiti SC","KaiTi","STKaiti","楷体","Kai","Songti SC","SimSun",serif;
+    font-size:58px;font-weight:700;line-height:1;letter-spacing:0;
     transform:rotate(-5deg) scale(1.7);
     opacity:0;
     animation:stamp .62s .15s cubic-bezier(.2,1.35,.4,1) forwards;
@@ -233,7 +234,7 @@
   .acts button{
     background:none;border:1px solid var(--cinnabar);border-radius:2px;
     font:inherit;cursor:pointer;
-    color:var(--cinnabar);font-size:15px;letter-spacing:.28em;
+    color:var(--cinnabar);font-size:18px;font-weight:700;letter-spacing:.28em;
     padding:12px 26px 12px 30px;
     transition:background .25s ease,color .25s ease;
   }
@@ -266,25 +267,46 @@
   .shareacts .ghost{background:none;color:var(--paper);border-color:rgba(244,237,223,.45)}
 
   @media (max-width:560px){
-    body{font-size:16px;line-height:1.95}
-    #stage{padding:52px 20px 60px}
-    .sheet{padding-left:26px}
-    .htitle{font-size:32px}
-    .intro{font-size:14.5px;line-height:2}
-    .lead{margin-top:32px}
-    .names li{height:46px;font-size:19px}
-    .names .circle{width:142px;height:48px;margin-top:-24px;left:-6px}
-    .enter{font-size:18px;padding:13px 30px 13px 34px;margin-top:44px}
-    .qtext{font-size:17px;margin-bottom:26px}
-    .opt{padding:13px 34px 13px 11px;margin-left:-11px;gap:11px}
-    .opt .t{font-size:16px;line-height:1.8}
-    .ehead{font-size:17px}
+    body{font-size:16.5px;line-height:1.95}
+    #stage{padding:52px 18px 60px}
+    .sheet{padding-left:24px}
+    .htitle{font-size:30px;letter-spacing:.06em}
+    .intro{font-size:15px;line-height:2.05;margin-top:24px}
+    .lead{margin-top:30px;font-size:13.5px}
+    .names li{height:47px;font-size:19px}
+    .names .circle{width:142px;height:48px;margin-top:-24px;left:-4px}
+    .enter{font-size:19px;padding:15px 34px 15px 38px;margin-top:44px;letter-spacing:.36em}
+    .qhead{margin-bottom:18px}
+    .qtext{font-size:17.5px;line-height:2;margin-bottom:28px}
+    .opt{padding:14px 34px 14px 11px;margin-left:-11px;gap:11px}
+    .opt .k{font-size:14.5px}
+    .opt .t{font-size:16.5px;line-height:1.85}
+    .ehead{font-size:19px;letter-spacing:.14em}
     .etitle{font-size:25px;margin-bottom:24px}
-    .seal{width:104px;height:104px;font-size:37px;border-width:3px}
-    .sealwrap{margin-right:-4px}
-    .equote{font-size:16.5px;margin:28px 0 34px}
-    .acts{margin-top:38px}
-    .acts button{font-size:14px;padding:11px 20px 11px 24px}
+    .ebody p{margin-bottom:17px}
+    .seal{width:108px;height:108px;font-size:40px;border-width:3px}
+    .sealwrap{margin:6px -4px 0 0}
+    .equote{font-size:17px;line-height:1.95;margin:28px 0 34px;padding-left:17px}
+    .acts{margin-top:40px;gap:12px}
+    .acts button{font-size:17px;letter-spacing:.24em;padding:12px 24px 12px 28px}
+    .sharetip{font-size:13.5px}
+    .shareacts a,.shareacts button{font-size:14.5px;padding:11px 20px}
+  }
+  @media (max-width:400px){
+    #stage{padding:46px 15px 54px}
+    .sheet{padding-left:20px}
+    .htitle{font-size:27px}
+    .intro{font-size:14.5px}
+    .names li{height:44px;font-size:18px}
+    .names .circle{width:132px;height:46px;margin-top:-23px;left:-2px}
+    .enter{font-size:18px;padding:14px 28px 14px 32px;letter-spacing:.3em}
+    .qtext{font-size:17px}
+    .opt .t{font-size:16px}
+    .ehead{font-size:18px}
+    .etitle{font-size:23px}
+    .seal{width:96px;height:96px;font-size:35px}
+    .equote{font-size:16.5px}
+    .acts button{font-size:16px;letter-spacing:.2em;padding:12px 20px 12px 24px}
   }
   @media (prefers-reduced-motion:reduce){
     *{animation-duration:.01ms !important;transition-duration:.01ms !important}
@@ -639,7 +661,7 @@
     x.strokeStyle = "#9C3226"; x.lineWidth = 6;
     x.strokeRect(-S / 2, -S / 2, S, S);
     x.fillStyle = "#9C3226";
-    x.font = "700 68px " + FAM_S;
+    x.font = "700 74px " + FAM_K;
     x.textAlign = "center"; x.textBaseline = "middle";
     var ch = sealChars(e), q = S / 4;
     x.fillText(ch[0] || "", -q, -q + 2);
