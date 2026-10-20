@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4EDDF">
+<title>你在林府能活到第几集</title>
+<style>
+  :root{
+    --paper:#F4EDDF;
+    --ink:#1F1B17;
+    --cinnabar:#A63A2E;
+    --ink-light:#7A6F63;
+    --rule:#DDD2BE;
+    --seal:#9C3226;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Kaiti SC","KaiTi","STKaiti","Songti SC","SimSun",serif;
+    font-size:17px;
+    line-height:2;
+    letter-spacing:.02em;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 纸纹 */
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(160,138,104,.07) 0%, transparent 48%),
+      radial-gradient(circle at 82% 74%, rgba(160,138,104,.06) 0%, transparent 46%),
+      repeating-linear-gradient(92deg, rgba(150,128,96,.022) 0 1px, transparent 1px 4px);
+  }
+
+  /* 命长刻度：线的长度＝活到第几集 */
+  #thread{
+    position:fixed;top:0;left:0;height:2px;width:0;z-index:60;
+    background:linear-gradient(90deg,rgba(166,58,46,.25),var(--cinnabar));
+    transition:width 1.1s cubic-bezier(.22,.9,.28,1);
+  }
+
+  #stage{
+    position:relative;z-index:1;
+    min-height:100vh;min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:64px 26px 72px;
+  }
+  .sheet{
+    position:relative;width:100%;max-width:600px;
+    padding-left:38px;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .sheet::before{ /* 朱丝栏 */
+    content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,rgba(166,58,46,0),rgba(166,58,46,.34) 8%,rgba(166,58,46,.34) 92%,rgba(166,58,46,0));
+  }
+  .sheet.out{opacity:0;transform:translateY(-9px)}
+  .sheet.in{opacity:0;transform:translateY(9px)}
+
+  /* ── 卷首 · 名册 ── */
+  .lead{
+    font-size:14px;color:var(--ink-light);letter-spacing:.14em;
+    margin-bottom:26px;
+  }
+  .names{list-style:none}
+  .names li{
+    position:relative;
+    display:flex;align-items:center;
+    height:52px;
+    border-bottom:1px solid var(--rule);
+    font-size:21px;letter-spacing:.12em;
+  }
+  .names li:first-child{border-top:1px solid var(--rule)}
+  .names li span{position:relative;z-index:2;padding-left:6px}
+  .names li.picked{color:var(--cinnabar)}
+  .names .circle{
+    position:absolute;left:-12px;top:50%;margin-top:-26px;
+    width:150px;height:52px;overflow:visible;pointer-events:none;
+  }
+  .names .circle path{
+    fill:none;stroke:var(--cinnabar);stroke-width:2.2;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:420;stroke-dashoffset:420;
+  }
+  .names .circle.go path{animation:draw 1.1s .35s cubic-bezier(.5,0,.3,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  .ghost-name{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    font-size:14px;letter-spacing:.3em;color:var(--cinnabar);
+    opacity:0;pointer-events:none;
+  }
+  .ghost-name.show{animation:ghost 2.2s ease forwards}
+  @keyframes ghost{
+    0%{opacity:0;filter:blur(3px)}
+    22%{opacity:.9;filter:blur(0)}
+    62%{opacity:.9}
+    100%{opacity:0;filter:blur(2px)}
+  }
+
+  .enter{
+    margin-top:44px;
+    background:none;border:none;font:inherit;cursor:pointer;
+    color:var(--cinnabar);font-size:15px;letter-spacing:.3em;
+    padding:8px 0;opacity:0;transition:opacity .5s ease;
+  }
+  .enter.on{opacity:1}
+  .enter::after{content:"";display:block;height:1px;width:100%;background:currentColor;opacity:.35;margin-top:7px;transform:scaleX(.35);transform-origin:left;transition:transform .4s ease}
+  .enter:hover::after{transform:scaleX(1)}
+
+  /* ── 题目 ── */
+  .qhead{
+    display:flex;align-items:baseline;gap:14px;
+    margin-bottom:22px;
+  }
+  .qno{font-size:13px;letter-spacing:.34em;color:var(--cinnabar)}
+  .qep{font-size:12px;letter-spacing:.16em;color:var(--ink-light)}
+  .qtext{
+    font-size:18.5px;line-height:2.05;
+    margin-bottom:34px;
+    text-align:justify;
+  }
+
+  .opts{list-style:none}
+  .opt{
+    position:relative;
+    display:flex;gap:14px;align-items:flex-start;
+    padding:15px 44px 15px 14px;
+    margin-left:-14px;
+    border-left:2px solid transparent;
+    cursor:pointer;
+    transition:border-color .25s ease,background .25s ease,transform .25s ease;
+  }
+  .opt + .opt{border-top:1px solid rgba(221,210,190,.55)}
+  .opt:hover{border-left-color:var(--cinnabar);background:rgba(166,58,46,.035);transform:translateX(3px)}
+  .opt .k{
+    flex:0 0 auto;font-size:14px;letter-spacing:.1em;color:var(--ink-light);
+    padding-top:3px;transition:color .25s ease;
+  }
+  .opt:hover .k{color:var(--cinnabar)}
+  .opt .t{font-size:17px;line-height:1.85}
+  .opt.done{pointer-events:none;background:rgba(166,58,46,.05);border-left-color:var(--cinnabar)}
+  .opt.done .k,.opt.done .t{color:var(--cinnabar)}
+  .opt .tick{
+    position:absolute;right:10px;top:50%;margin-top:-11px;
+    width:22px;height:22px;opacity:0;
+  }
+  .opt.done .tick{opacity:1}
+  .opt .tick path{
+    fill:none;stroke:var(--cinnabar);stroke-width:2.4;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:32;stroke-dashoffset:32;
+  }
+  .opt.done .tick path{animation:draw .34s cubic-bezier(.5,0,.3,1) forwards}
+
+  /* ── 结局 ── */
+  .ehead{font-size:12.5px;letter-spacing:.22em;color:var(--ink-light);margin-bottom:10px}
+  .etitle{
+    font-family:"Songti SC","SimSun",serif;
+    font-size:29px;font-weight:700;letter-spacing:.08em;
+    line-height:1.5;margin-bottom:30px;
+  }
+  .ebody p{margin-bottom:19px;text-align:justify}
+  .ebody p:last-child{margin-bottom:0}
+
+  .equote{
+    position:relative;
+    margin:34px 0 40px;
+    padding:2px 0 2px 20px;
+    border-left:2px solid var(--cinnabar);
+    font-size:17.5px;line-height:1.95;color:var(--cinnabar);
+  }
+
+  .sealwrap{display:flex;justify-content:flex-end;padding-right:6px}
+  .seal{
+    position:relative;
+    width:104px;height:104px;
+    border:3px solid var(--seal);border-radius:4px;
+    display:grid;grid-template-columns:1fr 1fr;place-items:center;
+    color:var(--seal);
+    font-family:"Songti SC","SimSun",serif;
+    font-size:25px;font-weight:700;line-height:1;letter-spacing:0;
+    transform:rotate(-4deg) scale(1.7);
+    opacity:0;
+    animation:stamp .62s .15s cubic-bezier(.2,1.35,.4,1) forwards;
+    box-shadow:inset 0 0 0 1px rgba(156,50,38,.35);
+  }
+  .seal::after{
+    content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;
+    background:
+      radial-gradient(circle at 22% 26%, transparent 46%, rgba(244,237,223,.34) 74%, transparent 78%),
+      radial-gradient(circle at 76% 82%, transparent 52%, rgba(244,237,223,.28) 76%, transparent 80%),
+      repeating-linear-gradient(48deg, rgba(244,237,223,.14) 0 1px, transparent 1px 3px);
+    mix-blend-mode:screen;
+  }
+  @keyframes stamp{
+    0%{opacity:0;transform:rotate(-4deg) scale(1.7)}
+    58%{opacity:1;transform:rotate(-4deg) scale(.955)}
+    100%{opacity:1;transform:rotate(-4deg) scale(1)}
+  }
+
+  .again{
+    display:block;margin:52px 0 0 auto;
+    background:none;border:none;font:inherit;cursor:pointer;
+    color:var(--ink-light);font-size:14px;letter-spacing:.28em;
+    transition:color .25s ease;
+  }
+  .again:hover{color:var(--cinnabar)}
+
+  .footnote{
+    margin-top:40px;padding-top:16px;
+    border-top:1px solid var(--rule);
+    font-size:12.5px;letter-spacing:.06em;color:var(--ink-light);line-height:1.9;
+  }
+  .footnote a{color:var(--cinnabar);text-decoration:none;border-bottom:1px solid rgba(166,58,46,.3)}
+
+  @media (max-width:560px){
+    body{font-size:16px;line-height:1.95}
+    #stage{padding:52px 20px 60px}
+    .sheet{padding-left:26px}
+    .names li{height:46px;font-size:19px}
+    .names .circle{width:142px;height:48px;margin-top:-24px;left:-6px}
+    .qtext{font-size:17px;margin-bottom:26px}
+    .opt{padding:13px 34px 13px 11px;margin-left:-11px;gap:11px}
+    .opt .t{font-size:16px;line-height:1.8}
+    .etitle{font-size:25px;margin-bottom:24px}
+    .seal{width:88px;height:88px;font-size:21px;border-width:2.5px}
+    .equote{font-size:16.5px;margin:28px 0 34px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div id="thread"></div>
+<div id="stage"><div class="sheet" id="sheet"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var TOTAL_EP = 47;
+
+  var Q = [
+    {
+      no: "其 一", ep: 3, epLabel: "第 3 集",
+      text: "进府第三日，管事婆子把你们四个新来的丫鬟领到正院。大奶奶赵星棠歪在榻上，手里拿着一本账册。她看得很慢，一页要看很久，眼也没抬，问你们会做什么活。",
+      opts: [
+        { k: "A", t: "你把绣帕递上去：「回大奶奶，奴婢会些女红。」" },
+        { k: "B", t: "你着急说：「回大奶奶，奴婢什么都不会，但奴婢勤快。」" },
+        { k: "C", t: "你盯着大奶奶手中的账本说：「奴婢识得字，认得账，可帮大奶奶。」", end: 1 },
+        { k: "D", t: "你低着头盯着地板，怯生生说：「会洗衣打扫，也下得厨。」" }
+      ]
+    },
+    {
+      no: "其 二", ep: 19.5, epLabel: "第 19 — 20 集",
+      text: "你晋升了二等丫鬟，专管茶水房事务。最近府中接连闹病，先是玉蝉起了一身红疹，接着是秦氏，再接着一个接一个倒下。官府来了人，站在门外问你：是不是闹了时疫。",
+      opts: [
+        { k: "A", t: "你怕得很，大喊：「就是时疫！救我出去！救我出去！」", end: 2 },
+        { k: "B", t: "你发现病倒的人都是用了热水，让大家今后只用凉水。" },
+        { k: "C", t: "你怀疑有人投毒，偷偷将热水送去太医院检验。" },
+        { k: "D", t: "你建议先把染病的人挪到一处空屋隔离，所有人用手帕掩住口鼻。" }
+      ]
+    },
+    {
+      no: "其 三", ep: 25, epLabel: "第 25 集",
+      text: "你救了林府，大太太许你一家三口脱了籍，你和父母住在城南小院。日子安稳地过着。这天邻居韩粱的母亲上门提亲，话还没说完，圣旨到了：林锦岐救驾有功，圣上赐婚许兰香。满院的人都跪下了，这时你——",
+      opts: [
+        { k: "A", t: "心想还有这等好事，我果真是千金命！你立马磕头谢恩。" },
+        { k: "B", t: "看了眼韩粱，跪恩接旨，当天连夜收拾包袱与韩郎君逃出了城门。", end: 3 },
+        { k: "C", t: "按住了爹爹的手，跪恩接旨，眼角含着屈辱的泪。" },
+        { k: "D", t: "接旨，心中盘算：爬得更高，也许更有机会替沈家鸣冤。" }
+      ]
+    },
+    {
+      no: "其 四", ep: 32.5, epLabel: "第 32 — 33 集",
+      text: "嫁入林家后你逐渐获得掌事大权，林锦岐也被你拿捏得死死的，最怕你说和离。这天大妹妹林绣莱抱着女儿回来，跪在正厅，撸起袖子——手臂上没有一块好肉。她嫁给举人鲁鉴六年，三千两嫁妆被他赌个干净。你准备——",
+      opts: [
+        { k: "A", t: "劝她为了一双儿女再忍几年，等鲁鉴回心转意。" },
+        { k: "B", t: "哥哥嫂嫂替你讨回公道！状告鲁家要求和离！" },
+        { k: "C", t: "带人闯进鲁家，把大妹妹抢回来，让全金陵都知道鲁鉴是禽兽。", end: 4 },
+        { k: "D", t: "你去请族老出面，让长辈们去鲁家讨个说法，与鲁鉴和离。" }
+      ]
+    },
+    {
+      no: "其 五", ep: 45, epLabel: "第 45 集",
+      text: "杜翠雀居然成为了海贼王，回来复仇了！她穿着一身大红嫁衣站在林府门外，身后是一队海匪，手里一支火铳。府里只有丫鬟、织娘和几个婆子。",
+      opts: [
+        { k: "A", t: "你戴好女主光环，提一盏灯笼走出去当面对峙，说服她。", end: 5 },
+        { k: "B", t: "全府的灯都灭了。四散躲藏起来，等待林锦岐回来救援。" },
+        { k: "C", t: "留得青山在不怕没柴烧，带着女眷钻狗洞跑路，保命要紧。" },
+        { k: "D", t: "我赌子弹没我快，将灯油泼在她身上，点燃火折子将她烧死。" }
+      ]
+    },
+    {
+      no: "其 六", ep: 47, epLabel: "第 47 集",
+      text: "你活到八十多岁，在一个睡梦里走的，无病无痛。手里攥着一个香囊，攥得很紧。香囊里装着——",
+      opts: [
+        { k: "A", t: "一个字条，只有一个字，是血写的：活。", end: 7 },
+        { k: "B", t: "一根褪了色的红线。", end: 6 }
+      ]
+    }
+  ];
+
+  var E = {
+    1: {
+      ep: 5, epLabel: "第 5 集", title: "你被杖毙了", seal: ["识字", "认账"],
+      body: [
+        "赵星棠瞟了你一眼，笑了，说这丫头伶俐，留在正院伺候。",
+        "第七天，你被支去库房取东西。回来的时候，箱笼已经被人翻开了——大奶奶丢的那枚金戒指，从你的铺盖底下被掏了出来。",
+        "杖责八十，你趴在雪地里喊冤，喊到嗓子出血。不久便咽了气。",
+        "你到最后都没弄明白，自己到底错在哪一步。",
+        "——不，你其实明白。你想起来她翻账册的时候，一页要看那么久。"
+      ],
+      quote: "在这座府里，识字认账的丫鬟，一个青葙就够了。"
+    },
+    2: {
+      ep: 19, epLabel: "第 19 集", title: "因「时疫」而死", seal: ["人祸", "难防"],
+      body: [
+        "当天下午，官府的封条就贴上了林府的门。",
+        "门是从外头钉死的。药从墙头吊进来，饭放在门槛外。官府只封门，不施药，说是怕人跑出去。",
+        "你刚开始没有起疹子。你只是被关在里头，看着每天都有人被抬出去。",
+        "第十四天。抬出去的人里，有你。",
+        "杜翠雀的案子是后来才查清的——南疆的秘毒混在浴水里，她被判了流放琼州。",
+        "你到死都以为自己是因为「时疫」丧了命。"
+      ],
+      quote: "人祸难防。"
+    },
+    3: {
+      ep: 28, epLabel: "第 28 集", title: "亡命鸳鸯", seal: ["亡命", "鸳鸯"],
+      body: [
+        "逃出城门后，一路往南，从泉州上的船，最后在一个不知名的岛国落了脚。",
+        "这里一年到头都是酷热，当地人肤色古铜，看你们眼中满是新鲜，但并无恶意。韩粱满腹经纶在这没了用武之地，靠着捕鱼为生；你凭一双巧手，贩卖新奇小玩意贴补家用。",
+        "日子也算一天天好起来了。你俩也晒得黝黑，融入了当地生活。置了院子，种了树，养了两只鸡。",
+        "第三年，有故国的商人到来，你们听到只言片语：当今圣上……科举……新状元……你攥了攥韩粱的手，韩粱回过神来，说：回家吃饭吧。",
+        "而你每年清明会在院里烧一次纸。是一份状纸，落款沈嘉兰，写完就烧。",
+        "韩粱走的时候年过古稀。你走的时候，枕头底下压着一张纸。上面只写了一行，是给天上的母亲看的：女儿活得很好。"
+      ],
+      quote: "你们这一生没有一天不安稳。也没有一天不想回去。"
+    },
+    4: {
+      ep: 33, epLabel: "第 33 集", title: "青灯古佛", seal: ["青灯", "古佛"],
+      body: [
+        "你带了九皋南客和几个壮硕的家丁，从后门砸进鲁家的院子。",
+        "大妹妹林绣莱被锁在房中，被你搀着出来的时候已经哭的没了力气。",
+        "鲁鉴也没打算就这么算了。他把你告到府衙，强抢民女，持械伤人，罔顾人伦纲常，败坏祖宗礼法。",
+        "诰命夫人的身份为你挡了这一灾。官府的判词写的是「两家姻亲，一时争执」。人是抢回来了。但孩子抢不回来——按律儿女归父，芝姐儿和弟弟还留在鲁家。",
+        "老太爷把你叫到祠堂。他没骂你，只伸手要走了你腰上的对牌和钥匙，说：「往后府里的事，不用你管了。」",
+        "渐渐的，你失了人心更失了心气，搬入了后院佛堂，日日为沈家亡魂诵经。",
+        "你活到了耄耋之年。府里换过两代下人，新来的已经不知道你是谁，只知道后院佛堂里住着一位老太太。"
+      ],
+      quote: "林家的故事还在继续，只是再与你无关。"
+    },
+    5: {
+      ep: 45, epLabel: "第 45 集", title: "反派话不多", seal: ["人狠", "话少"],
+      body: [
+        "你提着一盏灯笼走出大门，还没开口，杜翠雀就举起火铳，大叫一声：许兰香，去死吧！",
+        "你只看到火光一闪，便再也没了意识。"
+      ],
+      quote: "能成为海贼王的女人，人狠话不多。"
+    },
+    6: {
+      ep: 48, epLabel: "第 48 集", title: "白头偕老", seal: ["白头", "偕老"],
+      body: [
+        "那年他把线一圈一圈缠在两人身上，说：我妻订婚叫沈嘉兰，嫁我叫许兰香，红线系的一直是一个人，下辈子别认错。",
+        "你笑他矫情。",
+        "他后来回了朝堂，从指挥使做到尚书，不是为了他自己。",
+        "沈家的案，你没瞒他，他替你翻旧档、递折子。你在府里用沈家冤案写话本，沈嘉兰这个名字先在乡野中传开了。",
+        "新皇仁慈，准许重审冤案，翻案那天你跪在圣旨前，听太监把「沈嘉兰」三个字念了出来。",
+        "你没有哭。他哭了。",
+        "后来的日子里，沈嘉兰这个名字重回日光下。",
+        "他七十八岁那年走的。走之前他说：下辈子别认错。"
+      ],
+      quote: "这一辈子，名字要回来了，人也留住了。一样都没落下。"
+    },
+    7: {
+      ep: 47, epLabel: "第 47 集", title: "一个「活」字", seal: ["谁都", "不欠"],
+      body: [
+        "那年你在船上醒过来，母亲已经不在了。这张纸你收在香囊里，攥了七十多年。",
+        "你假装不识字，看不懂那是佛经还是账本。时疫的水样你送去了太医院。圣旨赐婚你接了，喜堂上给了他一巴掌。绣莱哭着回娘家那天，你说「这事哥哥嫂嫂替你讨回公道」。杜翠雀复仇那晚，你勇敢地朝她扔了火折子。",
+        "你把每一件该做的事都做了。",
+        "然后你看着人来人往，活到很老。"
+      ],
+      quote: "这一辈子，你谁都没欠。"
+    }
+  };
+
+  var sheet = document.getElementById("sheet");
+  var thread = document.getElementById("thread");
+  var qi = 0;
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
+    });
+  }
+
+  function setThread(ep){
+    var pct = Math.min(100, ep / TOTAL_EP * 100);
+    thread.style.width = pct.toFixed(2) + "%";
+  }
+
+  function swap(html, after){
+    sheet.classList.add("out");
+    setTimeout(function(){
+      sheet.innerHTML = html;
+      sheet.classList.remove("out");
+      sheet.classList.add("in");
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          sheet.classList.remove("in");
+          if (after) after();
+        });
+      });
+    }, 300);
+  }
+
+  /* ── 卷首 ── */
+  function cover(){
+    setThread(0);
+    var html =
+      '<div class="lead">今有新婢四名入林府</div>' +
+      '<ul class="names">' +
+        '<li class="picked"><span>许兰香</span>' +
+          '<svg class="circle" viewBox="0 0 168 54" preserveAspectRatio="none">' +
+            '<path d="M158 27 C158 41 124 50 82 50 C40 50 8 41 8 27 C8 13 42 5 82 5 C122 5 158 13 158 27"/>' +
+          '</svg>' +
+          '<em class="ghost-name">沈嘉兰</em>' +
+        '</li>' +
+        '<li><span>吕蕺儿</span></li>' +
+        '<li><span>周甘棠</span></li>' +
+        '<li><span>杜小莲</span></li>' +
+      '</ul>' +
+      '<button class="enter" id="enter">入 府</button>';
+
+    swap(html, function(){
+      var picked = sheet.querySelector(".picked");
+      var circle = sheet.querySelector(".circle");
+      var ghost = sheet.querySelector(".ghost-name");
+      var btn = document.getElementById("enter");
+
+      setTimeout(function(){ circle.classList.add("go"); }, 400);
+      setTimeout(function(){ ghost.classList.add("show"); }, 1350);
+      setTimeout(function(){ btn.classList.add("on"); }, 1900);
+
+      btn.addEventListener("click", next);
+    });
+  }
+
+  /* ── 题目 ── */
+  function renderQ(){
+    var q = Q[qi];
+    setThread(q.ep);
+
+    var html =
+      '<div class="qhead"><span class="qno">' + q.no + '</span><span class="qep">' + q.epLabel + '</span></div>' +
+      '<p class="qtext">' + esc(q.text) + '</p>' +
+      '<ul class="opts">' +
+      q.opts.map(function(o, i){
+        return '<li class="opt" data-i="' + i + '">' +
+          '<span class="k">' + o.k + '</span>' +
+          '<span class="t">' + esc(o.t) + '</span>' +
+          '<svg class="tick" viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 5.5"/></svg>' +
+        '</li>';
+      }).join("") +
+      '</ul>';
+
+    swap(html, function(){
+      var opts = sheet.querySelectorAll(".opt");
+      Array.prototype.forEach.call(opts, function(el){
+        el.addEventListener("click", function(){
+          if (el.classList.contains("done")) return;
+          el.classList.add("done");
+          var o = q.opts[+el.dataset.i];
+          setTimeout(function(){
+            if (o.end) { showEnding(o.end); }
+            else { qi++; renderQ(); }
+          }, 420);
+        });
+      });
+    });
+  }
+
+  function next(){
+    qi = 0;
+    renderQ();
+  }
+
+  /* ── 结局 ── */
+  function showEnding(id){
+    var e = E[id];
+    setThread(e.ep);
+
+    var html =
+      '<div class="ehead">' + e.epLabel + '</div>' +
+      '<h2 class="etitle">' + esc(e.title) + '</h2>' +
+      '<div class="ebody">' + e.body.map(function(p){ return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
+      '<blockquote class="equote">' + esc(e.quote) + '</blockquote>' +
+      '<div class="sealwrap"><div class="seal">' +
+        '<span>' + esc(e.seal[0]) + '</span><span>' + esc(e.seal[1]) + '</span>' +
+      '</div></div>' +
+      '<button class="again" id="again">重 新 入 府</button>' +
+      '<div class="footnote">共六问。你活到了' + e.epLabel + '。<br>' +
+        '还有另一个测试：<a href="https://sheepshaw.github.io/huashao2/" target="_blank" rel="noopener">花少 2 · 你是哪一个</a></div>';
+
+    swap(html, function(){
+      document.getElementById("again").addEventListener("click", function(){
+        cover();
+      });
+    });
+  }
+
+  cover();
+})();
+</script>
+</body>
+</html>
