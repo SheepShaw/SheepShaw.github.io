@@ -203,15 +203,15 @@
     font-size:.74em;font-weight:400;letter-spacing:.06em;
     color:var(--ink-light);margin-left:.15em;
   }
-  /* 真假结局判定 */
+  /* 真假结局判定：与结局标题同一行 */
   .everdict{
     display:inline-block;
-    margin:-18px 0 27px;
+    margin:0 0 6px 14px;
     padding:5px 13px 5px 16px;
     border:1px solid var(--cinnabar);border-radius:2px;
     font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
-    font-size:13.5px;letter-spacing:.3em;color:var(--cinnabar);
-    line-height:1.6;vertical-align:top;
+    font-size:13.5px;font-weight:400;letter-spacing:.3em;color:var(--cinnabar);
+    line-height:1.6;vertical-align:middle;
   }
   .everdict.fake{opacity:.9}
   .everdict.real{
@@ -338,7 +338,7 @@
     /* 结局页 */
     .ehead{font-size:19.5px;letter-spacing:.13em}
     .etitle{font-size:25px;margin-bottom:20px}
-    .everdict{font-size:13px;letter-spacing:.26em;padding:4px 11px 4px 13px;margin:-13px 0 23px}
+    .everdict{font-size:12.5px;letter-spacing:.24em;padding:3px 10px 3px 12px;margin:0 0 5px 10px}
     .ebody p{margin-bottom:15px}
     .sealwrap{top:52px;right:6px}
     .seal{width:152px;height:152px;font-size:67px;border-width:4px}
@@ -810,8 +810,8 @@
     var html =
       '<div class="ehead">你活到了' + e.epLabel +
         '<span class="etotal">（共 ' + TOTAL_EP + ' 集）</span></div>' +
-      '<h2 class="etitle">' + esc(e.title) + '</h2>' +
-      '<div class="everdict ' + e.tag + '">' + TAG_TEXT[e.tag] + '</div>' +
+      '<h2 class="etitle">' + esc(e.title) +
+        '<span class="everdict ' + e.tag + '">' + TAG_TEXT[e.tag] + '</span></h2>' +
       '<div class="ebody">' + e.body.map(function(p){ return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
       '<blockquote class="equote">' + esc(e.quote) + '</blockquote>' +
       '<div class="sealwrap"><div class="seal">' +
