@@ -197,6 +197,30 @@
     font-size:29px;font-weight:700;letter-spacing:.08em;
     line-height:1.5;margin-bottom:30px;
   }
+  /* 「（共 47 集）」总集数落差 */
+  .etotal{
+    font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
+    font-size:.74em;font-weight:400;letter-spacing:.06em;
+    color:var(--ink-light);margin-left:.15em;
+  }
+  /* 真假结局判定 */
+  .everdict{
+    display:inline-block;
+    margin:-18px 0 27px;
+    padding:5px 13px 5px 16px;
+    border:1px solid var(--cinnabar);border-radius:2px;
+    font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
+    font-size:13.5px;letter-spacing:.3em;color:var(--cinnabar);
+    line-height:1.6;vertical-align:top;
+  }
+  .everdict.fake{opacity:.9}
+  .everdict.real{
+    background:var(--cinnabar);color:var(--paper);font-weight:700;
+    box-shadow:0 3px 12px rgba(166,58,46,.22);
+  }
+  .everdict.hidden{
+    background:var(--ink);border-color:var(--ink);color:var(--paper);font-weight:700;
+  }
   .ebody p{margin-bottom:19px;text-align:justify}
   .ebody p:last-child{margin-bottom:0}
 
@@ -314,6 +338,7 @@
     /* 结局页 */
     .ehead{font-size:19.5px;letter-spacing:.13em}
     .etitle{font-size:25px;margin-bottom:20px}
+    .everdict{font-size:13px;letter-spacing:.26em;padding:4px 11px 4px 13px;margin:-13px 0 23px}
     .ebody p{margin-bottom:15px}
     .sealwrap{top:52px;right:6px}
     .seal{width:152px;height:152px;font-size:67px;border-width:4px}
@@ -361,6 +386,7 @@
 
   var TOTAL_EP = 47;
   var CN = ["甲", "乙", "丙", "丁"];
+  var TAG_TEXT = { fake: "假 结 局", real: "真 结 局", hidden: "隐 藏 结 局" };
 
   var Q = [
     {
@@ -425,7 +451,7 @@
 
   var E = {
     1: {
-      ep: 5, epLabel: "第 5 集", title: "你被杖毙了", seal: ["血溅", "三尺"],
+      ep: 5, epLabel: "第 5 集", title: "你被杖毙了", seal: ["血溅", "三尺"], tag: "fake",
       body: [
         "赵星棠瞟了你一眼，笑了，说这丫头伶俐，留在正院伺候。",
         "第七天，你被支去库房取东西。回来的时候，箱笼已经被人翻开了——大奶奶丢的那枚金戒指，从你的铺盖底下被掏了出来。",
@@ -436,7 +462,7 @@
       quote: "在这座府里，识字认账的丫鬟，一个青葙就够了。"
     },
     2: {
-      ep: 19, epLabel: "第 19 集", title: "因「时疫」而死", seal: ["人祸", "难防"],
+      ep: 19, epLabel: "第 19 集", title: "因「时疫」而死", seal: ["人祸", "难防"], tag: "fake",
       body: [
         "当天下午，官府的封条就贴上了林府的门。",
         "门是从外头钉死的。药从墙头吊进来，饭放在门槛外。官府只封门，不施药，说是怕人跑出去。",
@@ -448,7 +474,7 @@
       quote: "人祸难防。"
     },
     3: {
-      ep: 28, epLabel: "第 28 集", title: "亡命鸳鸯", seal: ["亡命", "鸳鸯"],
+      ep: 28, epLabel: "第 28 集", title: "亡命鸳鸯", seal: ["亡命", "鸳鸯"], tag: "fake",
       body: [
         "逃出城门后，一路往南，从泉州上的船，最后在一个不知名的岛国落了脚。",
         "这里一年到头都是酷热，当地人肤色古铜，看你们眼中满是新鲜，但并无恶意。韩粱满腹经纶在这没了用武之地，靠着捕鱼为生；你凭一双巧手，贩卖新奇小玩意贴补家用。",
@@ -460,7 +486,7 @@
       quote: "你们这一生没有一天不安稳。也没有一天不想回去。"
     },
     4: {
-      ep: 33, epLabel: "第 33 集", title: "青灯古佛", seal: ["青灯", "古佛"],
+      ep: 33, epLabel: "第 33 集", title: "青灯古佛", seal: ["青灯", "古佛"], tag: "fake",
       body: [
         "你带了九皋南客和几个壮硕的家丁，从后门砸进鲁家的院子。",
         "大妹妹林绣莱被锁在房中，被你搀着出来的时候已经哭的没了力气。",
@@ -473,7 +499,7 @@
       quote: "林家的故事还在继续，只是再与你无关。"
     },
     5: {
-      ep: 45, epLabel: "第 45 集", title: "反派话不多", seal: ["人狠", "话少"],
+      ep: 45, epLabel: "第 45 集", title: "反派话不多", seal: ["人狠", "话少"], tag: "fake",
       body: [
         "你提着一盏灯笼走出大门，还没开口，杜翠雀就举起火铳，大叫一声：许兰香，去死吧！",
         "你只看到火光一闪，便再也没了意识。"
@@ -481,7 +507,7 @@
       quote: "能成为海贼王的女人，人狠话不多。"
     },
     6: {
-      ep: 48, epLabel: "第 48 集", title: "白头偕老", seal: ["白头", "偕老"],
+      ep: 48, epLabel: "第 48 集", title: "白头偕老", seal: ["白头", "偕老"], tag: "hidden",
       body: [
         "那年他把线一圈一圈缠在两人身上，说：我妻订婚叫沈嘉兰，嫁我叫许兰香，红线系的一直是一个人，下辈子别认错。",
         "你笑他矫情。",
@@ -495,7 +521,7 @@
       quote: "这一辈子，名字要回来了，人也留住了。一样都没落下。"
     },
     7: {
-      ep: 47, epLabel: "第 47 集", title: "一个「活」字", seal: ["谁都", "不欠"],
+      ep: 47, epLabel: "第 47 集", title: "一个「活」字", seal: ["谁都", "不欠"], tag: "real",
       body: [
         "那年你在船上醒过来，母亲已经不在了。这张纸你收在香囊里，攥了七十多年。",
         "你假装不识字，看不懂那是佛经还是账本。时疫的水样你送去了太医院。圣旨赐婚你接了，喜堂上给了他一巴掌。绣莱哭着回娘家那天，你说「这事哥哥嫂嫂替你讨回公道」。杜翠雀复仇那晚，你勇敢地朝她扔了火折子。",
@@ -640,7 +666,7 @@
       return wrapLines(mc, text, w);
     }
 
-    var headTxt  = "你活到了" + e.epLabel.replace(/\s/g, "");
+    var headTxt  = "你活到了" + e.epLabel.replace(/\s/g, "") + "（共 " + TOTAL_EP + " 集）";
     var headLines  = collect(headTxt, 26, "400", FAM_S, maxW);
     var titleLines = collect(e.title, 54, "700", FAM_S, maxW);
     var bodyLines  = [];
@@ -649,9 +675,15 @@
     });
     var quoteLines = collect(e.quote, 30, "600", FAM_S, maxW - 44);
 
+    var tagTxt = TAG_TEXT[e.tag] || "";
+    mc.font = "400 24px " + FAM_S;
+    var tagBoxH = 46, tagPadX = 20;
+    var tagBoxW = mc.measureText(tagTxt).width + tagPadX * 2;
+
     var H = PAD * 2
           + headLines.length * 40 + 30
           + titleLines.length * 74 + 46
+          + tagBoxH + 34
           + bodyLines.length * 46 + 46
           + quoteLines.length * 52 + 78
           + 250;
@@ -682,6 +714,22 @@
     titleLines.forEach(function(l){ x.fillText(l, PAD, y + 54); y += 74; });
 
     y += 46;
+    /* 真假结局徽标 */
+    if (e.tag === "real" || e.tag === "hidden") {
+      x.fillStyle = e.tag === "real" ? "#A63A2E" : "#1F1B17";
+      x.fillRect(PAD, y, tagBoxW, tagBoxH);
+      x.fillStyle = "#F4EDDF";
+    } else {
+      x.strokeStyle = "#A63A2E"; x.lineWidth = 2;
+      x.strokeRect(PAD + 1, y + 1, tagBoxW - 2, tagBoxH - 2);
+      x.fillStyle = "#A63A2E";
+    }
+    x.font = "400 24px " + FAM_S;
+    x.textBaseline = "middle";
+    x.fillText(tagTxt, PAD + tagPadX, y + tagBoxH / 2 + 1);
+    x.textBaseline = "alphabetic";
+
+    y += tagBoxH + 34;
     x.fillStyle = "#3A342D";
     x.font = "400 26px " + FAM_K;
     bodyLines.forEach(function(l){ x.fillText(l, PAD, y + 26); y += 46; });
@@ -760,8 +808,10 @@
     setThread(e.ep);
 
     var html =
-      '<div class="ehead">你活到了' + e.epLabel + '</div>' +
+      '<div class="ehead">你活到了' + e.epLabel +
+        '<span class="etotal">（共 ' + TOTAL_EP + ' 集）</span></div>' +
       '<h2 class="etitle">' + esc(e.title) + '</h2>' +
+      '<div class="everdict ' + e.tag + '">' + TAG_TEXT[e.tag] + '</div>' +
       '<div class="ebody">' + e.body.map(function(p){ return "<p>" + esc(p) + "</p>"; }).join("") + '</div>' +
       '<blockquote class="equote">' + esc(e.quote) + '</blockquote>' +
       '<div class="sealwrap"><div class="seal">' +
