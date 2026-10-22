@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F4EDDF">
+<title>测测你是兰香如故里的谁？</title>
+<!-- 在线字体兜底：安卓/微信内置浏览器没有楷体与宋体，靠思源宋体+马善政楷书保证古风字形；加载失败自动回退，不影响页面 -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/400.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5/700.css">
+<link rel="stylesheet" media="print" onload="this.media='all'" href="https://cdn.jsdelivr.net/npm/@fontsource/ma-shan-zheng@5/400.css">
+<style>
+  :root{
+    --paper:#F4EDDF;
+    --ink:#1F1B17;
+    --cinnabar:#A63A2E;
+    --ink-light:#7A6F63;
+    --rule:#DDD2BE;
+    --seal:#9C3226;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;max-height:1000000px} /* 抑制安卓 X5(微信) 的 FontBoosting 自动放大 */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    /* 楷体优先（Mac/iOS/Windows 均有）→ 思源宋体（在线）→ 系统宋体，避免安卓/微信掉进黑体 */
+    font-family:"Kaiti SC","KaiTi","STKaiti","楷体",
+                "Noto Serif SC",
+                "Songti SC","STSong","SimSun","宋体",
+                "Noto Serif CJK SC","Source Han Serif SC","Source Han Serif CN",serif;
+    font-size:17px;
+    line-height:2;
+    letter-spacing:.02em;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 纸纹 */
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(circle at 18% 12%, rgba(160,138,104,.07) 0%, transparent 48%),
+      radial-gradient(circle at 82% 74%, rgba(160,138,104,.06) 0%, transparent 46%),
+      repeating-linear-gradient(92deg, rgba(150,128,96,.022) 0 1px, transparent 1px 4px);
+  }
+
+  /* 进度：线长＝测试进度 */
+  #thread{
+    position:fixed;top:0;left:0;height:2px;width:0;z-index:60;
+    background:linear-gradient(90deg,rgba(166,58,46,.25),var(--cinnabar));
+    transition:width 1.1s cubic-bezier(.22,.9,.28,1);
+  }
+
+  #stage{
+    position:relative;z-index:1;
+    min-height:100vh;min-height:100dvh;
+    display:flex;align-items:center;justify-content:center;
+    padding:30px 26px 52px;
+  }
+  .sheet{
+    position:relative;width:100%;max-width:600px;
+    padding-left:38px;
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  .sheet::before{ /* 朱丝栏 */
+    content:"";position:absolute;left:0;top:6px;bottom:6px;width:1px;
+    background:linear-gradient(180deg,rgba(166,58,46,0),rgba(166,58,46,.34) 8%,rgba(166,58,46,.34) 92%,rgba(166,58,46,0));
+  }
+  .sheet.out{opacity:0;transform:translateY(-9px)}
+  .sheet.in{opacity:0;transform:translateY(9px)}
+
+  /* ── 首页 · 标题与引言 ── */
+  .htitle{
+    font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
+    font-size:42px;line-height:1.4;font-weight:600;
+    letter-spacing:.08em;
+  }
+  .intro{
+    margin-top:28px;padding-top:20px;
+    border-top:1px solid var(--rule);
+    font-size:15px;line-height:2.1;color:var(--ink-light);
+  }
+  .intro b{color:var(--cinnabar);font-weight:400}
+
+  .enter{
+    display:block;margin:56px auto 0;
+    background:var(--cinnabar);border:1px solid var(--cinnabar);border-radius:2px;
+    font:inherit;cursor:pointer;
+    color:var(--paper);font-size:21px;font-weight:700;letter-spacing:.42em;
+    padding:16px 42px 16px 48px;
+    box-shadow:0 6px 22px rgba(166,58,46,.22);
+    opacity:0;transition:opacity .6s ease,background .3s ease,color .3s ease,box-shadow .3s ease;
+  }
+  .enter.on{opacity:1}
+  .enter.on:active{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
+
+  /* ── 题目 ── */
+  .qhead{
+    display:flex;align-items:baseline;gap:14px;
+    margin-bottom:22px;
+  }
+  .qno{font-size:13px;letter-spacing:.34em;color:var(--cinnabar)}
+  .qcount{margin-left:auto;font-size:13px;letter-spacing:.1em;color:var(--ink-light)}
+  .qtext{
+    font-size:18.5px;line-height:2.05;
+    margin-bottom:34px;
+    text-align:justify;
+  }
+
+  .opts{list-style:none}
+  .opt{
+    position:relative;
+    display:flex;gap:14px;align-items:flex-start;
+    padding:15px 44px 15px 14px;
+    margin-left:-14px;
+    border-left:2px solid transparent;
+    cursor:pointer;
+    transition:border-color .25s ease,background .25s ease,transform .25s ease;
+  }
+  .opt + .opt{border-top:1px solid rgba(221,210,190,.55)}
+  /* 悬停效果只在真鼠标设备生效：触屏点过会粘住 :hover，换题后同位置选项仍亮着 */
+  .opt .k{
+    flex:0 0 auto;
+    font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
+    font-size:15px;letter-spacing:.1em;color:var(--ink-light);
+    padding-top:4px;transition:color .25s ease;
+  }
+  .opt .t{font-size:17px;line-height:1.85}
+  /* 换题瞬间禁掉悬停态，避免鼠标没动导致新题该位置选项亮着 */
+  .sheet.nohover .opt{border-left-color:transparent!important;background:none!important;transform:none!important}
+  .sheet.nohover .opt .k{color:var(--ink-light)!important}
+  .opt.done{pointer-events:none;background:rgba(166,58,46,.05);border-left-color:var(--cinnabar)}
+  .opt.done .k,.opt.done .t{color:var(--cinnabar)}
+  .opt .tick{
+    position:absolute;right:10px;top:50%;margin-top:-11px;
+    width:22px;height:22px;opacity:0;
+  }
+  .opt.done .tick{opacity:1}
+  .opt .tick path{
+    fill:none;stroke:var(--cinnabar);stroke-width:2.4;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:32;stroke-dashoffset:32;
+  }
+  .opt.done .tick path{animation:draw .34s cubic-bezier(.5,0,.3,1) forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* ── 结果 ── */
+  .rhead{
+    font-size:13px;letter-spacing:.34em;color:var(--cinnabar);
+    margin-bottom:16px;
+  }
+  .rtitle{
+    font-family:"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif;
+    font-size:30px;font-weight:700;letter-spacing:.06em;
+    line-height:1.55;margin-bottom:26px;
+  }
+  .rtitle .rname{color:var(--cinnabar)}
+  .rprofile{margin:6px 0 4px}
+  .rsect{margin-bottom:14px}
+  .rlabel{
+    display:inline-block;
+    font-size:13px;letter-spacing:.3em;color:var(--cinnabar);
+    border:1px solid var(--cinnabar);border-radius:2px;
+    padding:3px 12px 3px 14px;
+  }
+  .rbio{font-size:17px;line-height:2;text-align:justify;color:var(--ink)}
+  .equote{
+    position:relative;
+    margin:30px 0 40px;
+    padding:2px 0 2px 20px;
+    border-left:2px solid var(--cinnabar);
+    font-size:18px;line-height:1.95;color:var(--cinnabar);
+  }
+
+  /* 朱印：钉死在屏幕右上角，与内容长短无关，不再随居中上下漂移；此处为人物印（2字竖排） */
+  .sealwrap{
+    position:fixed;top:74px;z-index:5;pointer-events:none;
+    right:max(14px, calc((100vw - 600px) / 2 + 8px));
+  }
+  .seal{
+    position:relative;
+    width:200px;height:200px;
+    border:6px solid var(--seal);border-radius:3px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--seal);
+    font-family:"Ma Shan Zheng","Kaiti SC","KaiTi","STKaiti","楷体","Kai",
+                "Noto Serif SC","Songti SC","STSong","SimSun","宋体",
+                "Noto Serif CJK SC","Source Han Serif SC",serif;
+    font-size:92px;font-weight:700;line-height:1.06;letter-spacing:0;
+    transform:rotate(-5deg) scale(1.7);
+    opacity:0;
+    mix-blend-mode:multiply;
+    animation:stamp .62s .15s cubic-bezier(.2,1.35,.4,1) forwards;
+    box-shadow:inset 0 0 0 1px rgba(156,50,38,.35);
+  }
+  .seal span{display:block}
+  .seal::after{
+    content:"";position:absolute;inset:0;border-radius:2px;pointer-events:none;
+    background:
+      radial-gradient(circle at 22% 26%, transparent 46%, rgba(244,237,223,.34) 74%, transparent 78%),
+      radial-gradient(circle at 76% 82%, transparent 52%, rgba(244,237,223,.28) 76%, transparent 80%),
+      repeating-linear-gradient(48deg, rgba(244,237,223,.14) 0 1px, transparent 1px 3px);
+    mix-blend-mode:screen;
+  }
+  @keyframes stamp{
+    0%{opacity:0;transform:rotate(-4deg) scale(1.7)}
+    58%{opacity:.5;transform:rotate(-4deg) scale(.955)}
+    100%{opacity:.5;transform:rotate(-4deg) scale(1)}
+  }
+
+  /* ── 结果页操作 ── */
+  .acts{
+    display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+    margin-top:48px;
+  }
+  .acts button{
+    background:none;border:1px solid var(--cinnabar);border-radius:2px;
+    font:inherit;cursor:pointer;
+    color:var(--cinnabar);font-size:18px;font-weight:700;letter-spacing:.28em;
+    padding:12px 26px 12px 30px;
+    transition:background .25s ease,color .25s ease;
+  }
+  .acts button.solid{background:var(--cinnabar);color:var(--paper)}
+
+  /* 悬停态只给真鼠标，触屏一律不触发（避免点过之后高亮粘住） */
+  @media (hover:hover) and (pointer:fine){
+    .opt:hover{border-left-color:var(--cinnabar);background:rgba(166,58,46,.035);transform:translateX(3px)}
+    .opt:hover .k{color:var(--cinnabar)}
+    .enter.on:hover{background:#8E2F25;border-color:#8E2F25;box-shadow:0 6px 22px rgba(166,58,46,.34)}
+    .acts button:hover{background:var(--cinnabar);color:var(--paper)}
+    .acts button.solid:hover{background:#8E2F25;border-color:#8E2F25}
+  }
+
+  /* ── 分享卡 ── */
+  .sharemask{
+    position:fixed;inset:0;z-index:200;
+    background:rgba(22,18,14,.78);
+    display:flex;align-items:center;justify-content:center;
+    padding:26px 18px;overflow:auto;
+  }
+  .sharebox{width:100%;max-width:400px;text-align:center}
+  .sharebox img{
+    width:100%;display:block;border-radius:2px;
+    box-shadow:0 14px 44px rgba(0,0,0,.45);
+  }
+  .sharetip{
+    margin:16px 0 14px;color:var(--paper);
+    font-size:13px;letter-spacing:.1em;opacity:.82;line-height:1.8;
+  }
+  .shareacts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .shareacts a,.shareacts button{
+    font-family:inherit;font-size:14px;letter-spacing:.2em;
+    padding:11px 22px;border-radius:2px;cursor:pointer;text-decoration:none;
+    border:1px solid var(--cinnabar);background:var(--cinnabar);color:var(--paper);
+  }
+  .shareacts .ghost{background:none;color:var(--paper);border-color:rgba(244,237,223,.45)}
+
+  @media (max-width:560px){
+    body{font-size:16.5px;line-height:1.9}
+    #stage{padding:24px 18px 48px}
+    .sheet{padding-left:24px}
+    /* 首页 */
+    .htitle{font-size:32px;letter-spacing:.05em}
+    .intro{font-size:16px;line-height:2.05;margin-top:24px}
+    .enter{font-size:21px;padding:16px 36px 16px 40px;margin:46px auto 0;letter-spacing:.34em}
+    /* 题目页 */
+    .qhead{margin-bottom:16px}
+    .qno{font-size:13.5px;letter-spacing:.3em}
+    .qcount{font-size:13px}
+    .qtext{font-size:17.5px;line-height:1.95;margin-bottom:24px}
+    .opt{padding:13px 34px 13px 11px;margin-left:-11px;gap:11px}
+    .opt .k{font-size:15px;padding-top:4px}
+    .opt .t{font-size:16.5px;line-height:1.8}
+    /* 结果页 */
+    .rhead{font-size:13.5px;margin-bottom:12px}
+    .rtitle{font-size:26px;margin-bottom:20px}
+    .rlabel{font-size:13px;padding:3px 10px 3px 12px}
+    .rbio{font-size:16.5px;line-height:1.95}
+    .equote{font-size:17px;line-height:1.9;margin:26px 0 30px;padding-left:16px}
+    .sealwrap{top:52px;right:6px}
+    .seal{width:150px;height:150px;font-size:68px;border-width:4px}
+    .acts{margin-top:38px;gap:12px}
+    .acts button{font-size:18px;letter-spacing:.22em;padding:12px 24px 12px 28px}
+  }
+  @media (max-width:400px){
+    body{font-size:16px;line-height:1.88}
+    #stage{padding:20px 15px 44px}
+    .sheet{padding-left:20px}
+    .htitle{font-size:29px}
+    .intro{font-size:15.5px}
+    .opt{padding:12px 30px 12px 10px;margin-left:-10px}
+    .opt .t{font-size:16px;line-height:1.78}
+    .rtitle{font-size:24px;margin-bottom:18px}
+    .rbio{font-size:16px;line-height:1.9}
+    .sealwrap{top:46px;right:2px}
+    .seal{width:134px;height:134px;font-size:60px;border-width:4px}
+    .acts{margin-top:34px}
+    .acts button{font-size:17.5px;letter-spacing:.18em;padding:12px 20px 12px 24px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+<div id="thread"></div>
+<div id="stage"><div class="sheet" id="sheet"></div></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var CN = ["甲", "乙", "丙", "丁"];
+
+  /* ── 角色池（8 位）── */
+  var R = [
+    { name:"许兰香", seal:["嘉","兰"],
+      bio:"沈家大小姐，家道败落以奴婢之身入林府。隐忍、善良、不争不抢，熬过无数委屈，最后沈家平反、恢复身份、与林锦岐生子、独撑家族到八十岁——全剧最圆满的人。",
+      quote:"你不是林家的女儿，你是沈家的。忍得住的，终会翻盘。" },
+    { name:"林锦岐", seal:["锦","岐"],
+      bio:"吏部尚书之孙，字凤台。认定一个人就护到底，为许兰香六年军功求赐婚；功成后交还侯印兵权，回江南种兰草。五十岁旧伤复发离世，红绳约来世。",
+      quote:"认定了，就护到底；功成了，就放手归去。" },
+    { name:"林锦岚", seal:["锦","岚"],
+      bio:"林家二少爷，自幼心疾被全府当瓷人护着。汉王谋反时却是他站出来稳住全府、带大姐儿的女儿伪装父女应对乱世，咳血吞雪不让人察觉；叛乱后病危，把儿子托给林锦岐、妻子托给许兰香。二十出头离世，最意难平。",
+      quote:"看着最弱的人，往往最靠得住。这一生虽短，却把最重要的人都托付了出去。" },
+    { name:"林绣芄", seal:["绣","芄"],
+      bio:"林家二小姐。不愿当家族联姻的工具，被杜家设计后不认输，自己开织坊立足；最后和谢昭四处游历，「一直旅行一直蜜月」，是全府唯一嫁给心上人的人。",
+      quote:"不靠家世，不靠男人，自己走出来的路最甜。" },
+    { name:"林绣茹", seal:["绣","茹"],
+      bio:"林家三小姐。从前胆小自卑、小心翼翼；替姐远嫁，丈夫战死后不哭坟，靠放风声逼袁家切割、为女儿争到家产；最后亲手用琵琶砸倒杜翠雀——「寡妇保产靠流言不靠眼泪」。",
+      quote:"别小看那个躲在角落的人，真到节骨眼上，是她一琵琶砸翻了反派。" },
+    { name:"杜翠雀", seal:["翠","雀"],
+      bio:"军户孤女，美丽却有大毒。当妾不成→给林府下毒→流放→假死→盘踞海上成海盗首领，一身大红嫁衣夜袭林府，最终被林绣茹一琵琶砸倒、葬身火海。",
+      quote:"野心比宅斗大了十圈的人，死得也最响。只缺一个肯收手的人。" },
+    { name:"赵星棠", seal:["星","棠"],
+      bio:"林锦岐的发妻，高门嫡女被当联姻棋子。胸无点墨、爱搞钱、泼辣手段狠；放印子钱、与表哥私通。和离后另寻退路，最终死于汉王谋反之乱，一生没能为自己活一次。",
+      quote:"规矩和账册，你算得比谁都精；唯独没算过，自己这一生该怎么活。" },
+    { name:"玉蝉", seal:["玉","蝉"],
+      bio:"林府知春馆一等丫鬟，聪明清醒、拎得清。被赵星棠强嫁傻子，和离后回府，果断追求幸福，与侍卫九皋成婚，凭努力成千户夫人；最后以管事嬷嬷身份，陪许兰香走完一生。",
+      quote:"不被身份困住的人，到哪儿都能活成自己的主母。" }
+  ];
+
+  /* 并列优先级（高频角色优先，减少冷门并列）：杜翠雀>许兰香>林锦岐>林绣芄>林绣茹>赵星棠>玉蝉>林锦岚 */
+  var TIE = [5, 0, 1, 3, 4, 6, 7, 2];
+
+  /* ── 题目（7 题）── 每选项 m=主角色(+2) s=次角色(+1)，数字为 R 下标 ── */
+  var Q = [
+    {
+      no: "其 一", scene: "面对欺压",
+      text: "进府第一晚，同屋的丫鬟把你的铺盖扔在地上。",
+      opts: [
+        { t: "捡起来重新铺好，当没发生过。", m:0, s:7 },
+        { t: "当场扔回去，问她凭什么。", m:5, s:3 },
+        { t: "第二天告诉管事婆子，按府里的规矩办。", m:6, s:4 },
+        { t: "笑着帮她也铺一次，让她欠你个人情。", m:7, s:0 }
+      ]
+    },
+    {
+      no: "其 二", scene: "钱怎么花",
+      text: "第一次领到月钱，三百文，攥在手里还带着新铜的凉意。",
+      opts: [
+        { t: "全存起来，攒着总有要用的时候。", m:0, s:6 },
+        { t: "全换成一碟糖糕一包瓜子，先吃个痛快。", m:3, s:5 },
+        { t: "托人捎回老家，给娘买双厚鞋。", m:2, s:7 },
+        { t: "打点管事，也给同屋的分两个。", m:7, s:1 }
+      ]
+    },
+    {
+      no: "其 三", scene: "秘密怎么处理",
+      text: "茶水房里，你撞见管账的姐姐在账册上悄悄改了一笔——她没看见你。",
+      opts: [
+        { t: "装没看见，退出去，这事烂在肚子里。", m:0, s:7 },
+        { t: "当场指着她鼻子，让她把账改回去。", m:5, s:3 },
+        { t: "回头禀了大奶奶，府里的规矩不能坏。", m:6, s:4 },
+        { t: "私下劝她：这样会连累一整屋的人。", m:4, s:2 }
+      ]
+    },
+    {
+      no: "其 四", scene: "被冤枉时",
+      text: "丢了一只金耳坠，管事婆子当众指着你：「就是这新来的丫头手脚不干净。」",
+      opts: [
+        { t: "跪下来哭着喊冤，求大伙信你。", m:0, s:7 },
+        { t: "反手把那婆子按在地上，让她把话说清楚。", m:5, s:3 },
+        { t: "站出来要搜身对质，规矩不能坏在你身上。", m:6, s:1 },
+        { t: "不慌不忙，等真正的贼自己露馅。", m:2, s:4 }
+      ]
+    },
+    {
+      no: "其 五", scene: "感情与利益",
+      text: "府里一位少爷常在你路过时放下脚步，说要带你脱籍、许你个前程。",
+      opts: [
+        { t: "笑而不答，先看清他是真心还是拿你寻开心。", m:1, s:7 },
+        { t: "直接应下，飞上枝头试试再说。", m:5, s:6 },
+        { t: "婉拒，你只信自己一步步挣来的。", m:3, s:4 },
+        { t: "把话散出去，让全府都知道有人抬举你。", m:6, s:2 }
+      ]
+    },
+    {
+      no: "其 六", scene: "安稳 vs 自由",
+      text: "有个机会能脱了奴籍出府，条件是此生不能再踏回林府半步，也带不走任何东西。",
+      opts: [
+        { t: "留下，林府再苦也是个有对牌的地方。", m:6, s:0 },
+        { t: "走，困在这院子里还算什么活。", m:5, s:3 },
+        { t: "不走，这里还有你放不下的人。", m:1, s:2 },
+        { t: "走，但先把攒的钱和人情都理清楚再走。", m:7, s:4 }
+      ]
+    },
+    {
+      no: "其 七", scene: "终极价值",
+      text: "十年后，你希望听到别人提起你时，说的是哪一句？",
+      opts: [
+        { t: "「那人，什么苦都咽得下，命是真硬。」", m:0, s:7 },
+        { t: "「那人，谁敢欺她半分，必遭十倍奉还。」", m:5, s:3 },
+        { t: "「那人，把一屋子人照拂得妥妥帖帖。」", m:7, s:6 },
+        { t: "「那人，为了心里那点念想，一辈子没挪过窝。」", m:1, s:2 }
+      ]
+    }
+  ];
+
+  var sheet = document.getElementById("sheet");
+  var thread = document.getElementById("thread");
+  var qi = 0;
+  var scores = [0,0,0,0,0,0,0,0];
+
+  function esc(s){
+    return String(s).replace(/[&<>"]/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];
+    });
+  }
+
+  function setThread(frac){
+    thread.style.width = (Math.max(0,Math.min(1,frac)) * 100).toFixed(2) + "%";
+  }
+
+  function swap(html, after){
+    sheet.classList.add("out");
+    setTimeout(function(){
+      sheet.innerHTML = html;
+      sheet.classList.add("nohover");
+      setTimeout(function(){ sheet.classList.remove("nohover"); }, 560);
+      sheet.classList.remove("out");
+      sheet.classList.add("in");
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          sheet.classList.remove("in");
+          if (after) after();
+        });
+      });
+    }, 300);
+  }
+
+  /* ── 首页 ── */
+  function cover(){
+    setThread(0);
+    var html =
+      '<h1 class="htitle">测测你是<br>兰香如故里的谁</h1>' +
+      '<p class="intro">林府一大家子，各有各的命。<br>' +
+        '七道题，看清你是里头哪一个。<br>' +
+        '——最像你的人，未必最好命。</p>' +
+      '<button class="enter" id="enter">测 一 测</button>';
+
+    swap(html, function(){
+      var btn = document.getElementById("enter");
+      btn.classList.add("on");                                   /* 一进页面就在 */
+      btn.addEventListener("click", start);
+    });
+  }
+
+  function start(){
+    qi = 0;
+    scores = [0,0,0,0,0,0,0,0];
+    renderQ();
+  }
+
+  /* ── 题目 ── */
+  function renderQ(){
+    var q = Q[qi];
+    setThread((qi + 1) / Q.length);
+
+    var html =
+      '<div class="qhead"><span class="qno">' + q.no + '</span>' +
+        '<span class="qcount">' + (qi + 1) + ' / ' + Q.length + '</span></div>' +
+      '<p class="qtext">' + esc(q.text) + '</p>' +
+      '<ul class="opts">' +
+      q.opts.map(function(o, i){
+        return '<li class="opt" data-i="' + i + '">' +
+          '<span class="k">' + CN[i] + '</span>' +
+          '<span class="t">' + esc(o.t) + '</span>' +
+          '<svg class="tick" viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 5.5"/></svg>' +
+        '</li>';
+      }).join("") +
+      '</ul>';
+
+    swap(html, function(){
+      var opts = sheet.querySelectorAll(".opt");
+      Array.prototype.forEach.call(opts, function(el){
+        el.addEventListener("click", function(){
+          if (el.classList.contains("done")) return;
+          el.classList.add("done");
+          var o = q.opts[+el.dataset.i];
+          scores[o.m] += 2;
+          scores[o.s] += 1;
+          setTimeout(function(){
+            if (qi + 1 < Q.length) { qi++; renderQ(); }
+            else { showResult(); }
+          }, 420);
+        });
+      });
+    });
+  }
+
+  /* ── 计分：最高分即结果；并列按 TIE 优先级 ── */
+  function computeResult(){
+    var max = -1, i;
+    for (i = 0; i < scores.length; i++) if (scores[i] > max) max = scores[i];
+    for (i = 0; i < TIE.length; i++){
+      if (scores[TIE[i]] === max) return TIE[i];
+    }
+    return 0;
+  }
+
+  /* ── 分享卡：把结果画成一张图 ── */
+  function buildShareCanvas(r){
+    var W = 750, PAD = 78, maxW = W - PAD * 2;
+    var FAM_S = '"Songti SC","STSong","SimSun","宋体","Noto Serif SC",serif';
+    var FAM_K = '"Kaiti SC","KaiTi","STKaiti","楷体","Noto Serif SC","Songti SC","SimSun",serif';
+    var FAM_SEAL = '"Ma Shan Zheng","Kaiti SC","KaiTi","STKaiti","楷体","Noto Serif SC",serif';
+
+    var mc = document.createElement("canvas").getContext("2d");
+    function collect(text, px, weight, fam, w){
+      mc.font = weight + " " + px + "px " + fam;
+      var out = [], cur = "";
+      for (var i = 0; i < text.length; i++){
+        var ch = text[i];
+        if (cur && mc.measureText(cur + ch).width > w){ out.push(cur); cur = ch; }
+        else cur += ch;
+      }
+      if (cur) out.push(cur);
+      return out;
+    }
+
+    var titleTxt   = "你是林府里的 " + r.name;
+    var titleLines = collect(titleTxt, 50, "700", FAM_S, maxW);
+    var bioLines   = collect(r.bio, 27, "400", FAM_K, maxW);
+    var quoteLines = collect(r.quote, 30, "600", FAM_S, maxW - 44);
+
+    var H = PAD * 2
+          + titleLines.length * 70 + 40
+          + 30
+          + bioLines.length * 48 + 40
+          + quoteLines.length * 52 + 78
+          + 250;
+
+    var c = document.createElement("canvas");
+    c.width = W; c.height = H;
+    var x = c.getContext("2d");
+
+    /* 纸 */
+    x.fillStyle = "#F4EDDF"; x.fillRect(0, 0, W, H);
+    var g = x.createRadialGradient(W * .18, H * .12, 0, W * .18, H * .12, W);
+    g.addColorStop(0, "rgba(160,138,104,.09)"); g.addColorStop(1, "rgba(160,138,104,0)");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.fillStyle = "#A63A2E"; x.fillRect(0, 0, W, 4);
+    x.fillStyle = "rgba(166,58,46,.30)"; x.fillRect(PAD - 26, PAD, 1, H - PAD * 2);
+
+    var y = PAD + 6;
+    x.textBaseline = "alphabetic";
+
+    /* 标题 */
+    x.fillStyle = "#1F1B17";
+    x.font = "700 50px " + FAM_S;
+    titleLines.forEach(function(l){ x.fillText(l, PAD, y + 54); y += 70; });
+
+    y += 40;
+    /* 人物小传 */
+    x.fillStyle = "#A63A2E";
+    x.font = "400 24px " + FAM_S;
+    x.fillText("人 物 小 传", PAD, y + 24); y += 44;
+    x.fillStyle = "#3A342D";
+    x.font = "400 27px " + FAM_K;
+    bioLines.forEach(function(l){ x.fillText(l, PAD, y + 27); y += 48; });
+
+    /* 判词 */
+    y += 40;
+    x.fillStyle = "rgba(166,58,46,.85)";
+    x.fillRect(PAD, y - 34, 4, quoteLines.length * 52 + 6);
+    x.fillStyle = "#A63A2E";
+    x.font = "600 30px " + FAM_S;
+    quoteLines.forEach(function(l){ x.fillText(l, PAD + 22, y + 30); y += 52; });
+
+    /* 人物印（2 字竖排） */
+    var S = 250;
+    x.save();
+    x.globalAlpha = .66;
+    x.translate(W - PAD - S / 2, H - PAD - S / 2);
+    x.rotate(-5 * Math.PI / 180);
+    x.strokeStyle = "#9C3226"; x.lineWidth = 7;
+    x.strokeRect(-S / 2, -S / 2, S, S);
+    x.fillStyle = "#9C3226";
+    x.font = "700 100px " + FAM_SEAL;
+    x.textAlign = "center"; x.textBaseline = "middle";
+    var q = S / 4;
+    x.fillText(r.seal[0] || "", 0, -q + 2);
+    x.fillText(r.seal[1] || "", 0,  q + 2);
+    x.restore();
+    x.textAlign = "left"; x.textBaseline = "alphabetic";
+
+    /* 落款 */
+    x.fillStyle = "#7A6F63";
+    x.font = "400 22px " + FAM_S;
+    x.fillText("兰香如故 · 你是林府里的谁", PAD, H - PAD - 14);
+
+    return c;
+  }
+
+  function openShare(r){
+    var go = function(){
+      var c = buildShareCanvas(r);
+      var url;
+      try { url = c.toDataURL("image/png"); }
+      catch (err) { alert("生成失败了，换个浏览器试试"); return; }
+
+      var mask = document.createElement("div");
+      mask.className = "sharemask";
+      mask.innerHTML =
+        '<div class="sharebox">' +
+          '<img alt="结果卡" src="' + url + '">' +
+          '<div class="sharetip">长按图片保存到相册</div>' +
+          '<div class="shareacts">' +
+            '<a download="兰香如故·你是' + r.name + '.png" href="' + url + '">保存图片</a>' +
+            '<button class="ghost" type="button">关 闭</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(mask);
+
+      mask.addEventListener("click", function(ev){
+        if (ev.target === mask) mask.remove();
+      });
+      mask.querySelector(".ghost").addEventListener("click", function(){ mask.remove(); });
+    };
+    /* 等在线字体就绪再出图，保证分享卡上的朱印是楷书 */
+    try {
+      if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+        document.fonts.ready.then(go, go);
+      } else go();
+    } catch (err) { go(); }
+  }
+
+  /* ── 结果 ── */
+  function showResult(){
+    var id = computeResult();
+    var r = R[id];
+    setThread(1);
+
+    var html =
+      '<div class="rhead">测 结 果</div>' +
+      '<h2 class="rtitle">你是林府里的<br><span class="rname">' + esc(r.name) + '</span></h2>' +
+      '<div class="rprofile">' +
+        '<div class="rsect"><span class="rlabel">人 物 小 传</span></div>' +
+        '<p class="rbio">' + esc(r.bio) + '</p>' +
+      '</div>' +
+      '<blockquote class="equote">' + esc(r.quote) + '</blockquote>' +
+      '<div class="sealwrap"><div class="seal">' +
+        r.seal.map(function(c){ return '<span>' + esc(c) + '</span>'; }).join("") +
+      '</div></div>' +
+      '<div class="acts">' +
+        '<button type="button" class="solid" id="share">分 享 结 果</button>' +
+        '<button type="button" id="again">重 新 测 试</button>' +
+      '</div>';
+
+    swap(html, function(){
+      document.getElementById("again").addEventListener("click", cover);
+      document.getElementById("share").addEventListener("click", function(){ openShare(r); });
+    });
+  }
+
+  cover();
+})();
+</script>
+</body>
+</html>
