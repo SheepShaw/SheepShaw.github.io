@@ -2,7 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="description" content="8 道题，测出你在《兰香如故》林府里的弹幕人格">
+<meta property="og:title" content="测测你像《兰香如故》里的谁">
+<meta property="og:description" content="8 道题，测出你在林府里的弹幕人格">
+<meta property="og:type" content="website">
 <title>测测你像兰香如故里的谁</title>
 <style>
 :root{
@@ -15,10 +20,17 @@ body{
   background:var(--paper); color:var(--ink);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",sans-serif;
   font-size:15px; line-height:1.7;
+  -webkit-text-size-adjust:100%; text-size-adjust:100%;
 }
 .serif{font-family:"Songti SC","STSong","SimSun","Noto Serif CJK SC",serif}
-.wrap{max-width:460px;margin:0 auto;padding:0 20px 56px;min-height:100vh}
+.wrap{
+  max-width:460px;margin:0 auto;min-height:100vh;
+  padding:0 20px calc(56px + env(safe-area-inset-bottom));
+}
+@supports (min-height:100dvh){ .wrap{min-height:100dvh} }
 .hide{display:none!important}
+/* 弹层打开时锁住背景滚动，避免手指一划把底层页面也带跑（top 由 JS 设成负的滚动量） */
+body.lock{position:fixed;top:0;left:0;right:0;width:100%;overflow:hidden}
 .full{margin-left:-20px;margin-right:-20px}
 
 /* ---------- 中式纹样：回纹带 / 方胜分隔 / 月洞门 ---------- */
@@ -60,6 +72,7 @@ body{
   display:block;width:100%;padding:14px;border-radius:999px;border:none;
   background:var(--zhu);color:#FFF6F2;font-size:16px;letter-spacing:3px;
   font-family:inherit;cursor:pointer;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
 }
 .btn:active{opacity:.85}
 .btn.ghost{background:transparent;border:1px solid var(--zhu-line);color:var(--zhu);letter-spacing:2px;padding:12px}
@@ -78,14 +91,22 @@ body{
   background:var(--card);border:1px solid var(--line);border-radius:12px;
   padding:15px 16px;font-size:15px;line-height:1.55;cursor:pointer;
   display:flex;gap:11px;align-items:flex-start;transition:border-color .15s,background .15s;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
 }
+.opt:active{background:var(--zhu-soft);border-color:var(--zhu-line)}
 .opt .k{
   flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--line);
   font-size:12px;line-height:20px;text-align:center;color:var(--ink3);margin-top:1px;
 }
 .opt.on{border-color:var(--zhu);background:var(--zhu-soft)}
 .opt.on .k{background:var(--zhu);border-color:var(--zhu);color:#FFF6F2}
-.back{margin-top:22px;text-align:center;font-size:13px;color:var(--ink3);cursor:pointer}
+/* 返回上题：原来只有一行字高（约 20px），手指很难点中，撑到 44px 的触摸区 */
+.back{
+  margin-top:14px;text-align:center;font-size:13px;color:var(--ink3);cursor:pointer;
+  padding:12px 0;min-height:44px;line-height:1.4;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
+}
+.back:active{color:var(--zhu)}
 .tip{font-size:12px;color:var(--ink3);text-align:center;margin-top:10px}
 
 /* ---------- 结果 ---------- */
@@ -137,16 +158,50 @@ body{
 
 /* ---------- 分享卡弹层 ---------- */
 .shade{
-  position:fixed;inset:0;z-index:120;overflow:auto;padding:24px 16px 40px;
+  position:fixed;inset:0;z-index:120;overflow:auto;
+  padding:20px 16px calc(24px + env(safe-area-inset-bottom));
   background:rgba(32,28,24,.62);-webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;   /* 滑到底不要把底层页面一起带着滚 */
 }
 .sh-box{max-width:420px;margin:0 auto;background:var(--paper);border-radius:8px;padding:16px 16px 18px}
 .sh-hd{font-size:13px;letter-spacing:3px;color:var(--zhu);text-align:center;margin:0 0 12px}
+/* 卡是 1380×2014 的竖版，按宽度铺满会顶到屏幕外面去，按钮得滚很久才够得着——限高并居中 */
 .sh-img{
-  display:block;width:100%;border:1px solid var(--line);border-radius:4px;background:#fff;
+  display:block;width:100%;max-height:min(62vh,460px);object-fit:contain;
+  border:1px solid var(--line);border-radius:4px;background:var(--paper);
 }
-.sh-btns{display:grid;gap:10px;margin-top:16px}
+/* 按钮吸底：图再长，保存/返回也一直够得着 */
+.sh-btns{
+  display:grid;gap:10px;margin-top:14px;
+  position:sticky;bottom:0;
+  padding:12px 0 calc(8px + env(safe-area-inset-bottom));
+  background:linear-gradient(180deg,rgba(247,242,233,0),var(--paper) 34%);
+}
 .shade .btn{padding:12px 0}
+
+/* ---------- 轻提示（保存方式提示等，2 秒自动消失） ---------- */
+.toast{
+  position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);
+  z-index:200;max-width:min(88vw,340px);
+  background:rgba(46,42,38,.94);color:#FFF6F2;font-size:13.5px;line-height:1.6;
+  padding:11px 16px;border-radius:10px;text-align:center;
+  opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.toast.on{opacity:1}
+
+/* ---------- 矮屏（iPhone SE / 8 一类）压缩封面，让「开始测试」不用滚才看得见 ---------- */
+@media (max-height:700px){
+  .hill{height:80px;margin-top:10px}
+  .c-h1{font-size:24px;margin-top:8px}
+  .c-dm{height:66px;margin-bottom:18px}
+  .d2{top:20px} .d3{top:40px}
+  .c-meta{margin-top:12px}
+}
+/* 系统开了「减弱动态效果」就把弹幕停掉 */
+@media (prefers-reduced-motion:reduce){
+  .c-dm{height:auto;overflow:visible;margin-bottom:14px}
+  .c-dm span{animation:none;position:static;display:block;width:fit-content;margin:0 auto 6px}
+}
 
 </style>
 </head>
@@ -271,6 +326,8 @@ body{
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const AXIS_CODE = ['安分守旧','权谋布局','市井圆滑','先锋反骨','重情重义','清醒通透'];
@@ -516,23 +573,62 @@ function restart(){
   try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){}
   show('s-cover'); window.scrollTo(0,0);
 }
+/* 弹层打开时把底层页面钉住，关闭后回到原来的滚动位置（iOS 上光靠 overflow:hidden 挡不住） */
+let _lockY=0;
+function lockBody(){
+  _lockY=window.scrollY||document.documentElement.scrollTop||0;
+  document.body.style.top=(-_lockY)+'px';
+  document.body.classList.add('lock');
+}
+function unlockBody(){
+  document.body.classList.remove('lock');
+  document.body.style.top='';
+  window.scrollTo(0,_lockY);
+}
+let _toastT=0;
+function toast(msg,ms){
+  const t=document.getElementById('toast');
+  if(!t) return;
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(_toastT);
+  _toastT=setTimeout(function(){ t.classList.remove('on'); }, ms||2600);
+}
 function openShare(){
   const cv=drawShareCard();
   if(!cv){ alert('请先完成测试'); return; }
   try{ SHARE_DATA=cv.toDataURL('image/png'); }catch(e){ SHARE_DATA=''; }
   if(SHARE_DATA) document.getElementById('sh-img').src=SHARE_DATA;
+  lockBody();
   document.getElementById('s-share').classList.remove('hide');
-  window.scrollTo(0,0);
+  // 微信 / iOS Safari 不支持 a[download]，把按钮文案换成它们真正能用的那条路
+  const ua=navigator.userAgent||'';
+  const noDl=/MicroMessenger/i.test(ua)||/QQ\//i.test(ua)||/iP(hone|ad|od)/i.test(ua);
+  const b=document.querySelector('#s-share .btn');
+  if(b) b.textContent=noDl?'长 按 图 片 保 存':'保 存 图 片';
 }
-function closeShare(){ document.getElementById('s-share').classList.add('hide'); }
+function closeShare(){
+  document.getElementById('s-share').classList.add('hide');
+  unlockBody();
+}
 function saveShare(){
   if(!SHARE_DATA){ alert('分享卡还没生成，请先点「分享结果」'); return; }
+  const ua=navigator.userAgent||'';
+  const inApp=/MicroMessenger/i.test(ua)||/QQ\//i.test(ua);
+  const isIOS=/iP(hone|ad|od)/i.test(ua)||(navigator.platform==='MacIntel'&&(navigator.maxTouchPoints||0)>1);
+  // iOS Safari 虽支持 a[download]，但文件会落进「文件」App，多数人找不到；对它和微信统一走长按存相册
+  const canDownload=!inApp && !isIOS && ('download' in document.createElement('a'));
+  if(!canDownload){
+    // 微信/QQ/部分 iOS 浏览器点 download 是没反应的，直接告诉用户长按图片存
+    toast(isIOS||inApp ? '长按上方图片 → 选「保存图片／存储到照片」' : '如无法保存，可长按上方图片另存');
+    return;
+  }
   try{
     const a=document.createElement('a');
     a.href=SHARE_DATA;
     a.download='兰香如故_我的入府弹幕人格.png';
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  }catch(e){ alert('当前浏览器不支持直接下载，请长按图片保存'); }
+    toast('已保存到下载目录');
+  }catch(e){ toast('如无法保存，可长按上方图片另存'); }
 }
 
 /* ===== 分享卡：单独生成一张竖版图，只保留关键信息 ===== */
