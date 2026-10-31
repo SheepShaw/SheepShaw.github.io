@@ -719,28 +719,26 @@ function drawShareCard(){
   let y=0;
 
   g.textBaseline='middle'; g.textAlign='center';
-  // 抬头
-  g.fillStyle=ZHU; g.font=_f(23,true); _spText(g,'兰香如故',cx,80,10);
-  g.fillStyle=INK3; g.font=_f(13,false); _spText(g,'入府弹幕人格测试',cx,110,5);
-  g.strokeStyle=ZL; g.lineWidth=1;
-  g.beginPath(); g.moveTo(cx-72,134.5); g.lineTo(cx+72,134.5); g.stroke();
+  // 抬头：一句话标题 →「你确诊为」→ 朱框人格名
+  // （原「兰香如故 / 入府弹幕人格测试 / 分隔线 / 你的入府弹幕人格，确诊为」四行已删）
+  g.fillStyle=ZHU; g.font=_f(21,true); _spText(g,'测测你像兰香如故里的谁',cx,78,4);
+  g.fillStyle=INK3; g.font=_f(14,false); g.textAlign='center';
+  g.fillText('你确诊为',cx,116);
   // 人格名 · 每字一朱框
-  g.font=_f(14,false); g.fillStyle=INK3; g.textAlign='center';
-  g.fillText('你的入府弹幕人格，确诊为',cx,164);
   const chs=c.persona.split(''), bw=52, bh=54, bg=9;
   const total=chs.length*bw+(chs.length-1)*bg;
   let bx=cx-total/2;
   g.textBaseline='middle';
   for(let i=0;i<chs.length;i++){
-    g.fillStyle=ZHU; _rr(g,bx,180,bw,bh,5); g.fill();
+    g.fillStyle=ZHU; _rr(g,bx,136,bw,bh,5); g.fill();
     g.fillStyle='#FFF6F2'; g.font=_f(28,true);
-    g.fillText(chs[i], bx+bw/2, 180+bh/2+1);
+    g.fillText(chs[i], bx+bw/2, 136+bh/2+1);
     bx+=bw+bg;
   }
-  y=180+bh;
+  y=136+bh;
   // 共鸣度
   g.fillStyle=INK2; g.font=_f(15,false);
-  g.fillText('你与《兰香如故》里的【'+NAME[L.bi]+'】',cx,y+40);
+  g.fillText('你与【'+NAME[L.bi]+'】',cx,y+40);
   g.fillStyle=INK3; g.font=_f(12.5,false); _spText(g,'共鸣度',cx,y+70,6);
   g.fillStyle=ZHU;
   g.font=_f(64,true,'500'); const nw=g.measureText(String(L.p1)).width;
