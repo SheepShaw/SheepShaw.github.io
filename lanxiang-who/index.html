@@ -261,7 +261,7 @@ body.lock{position:fixed;top:0;left:0;right:0;width:100%;overflow:hidden}
   <section id="s-result" class="hide">
     <div class="fret" style="margin-bottom:16px"></div>
     <div class="r-top">
-      <p class="r-cap">你的入府弹幕人格，确诊为</p>
+      <p class="r-cap">你确诊为</p>
       <div class="sealword serif" id="r-persona"></div>
       <p class="r-who" id="r-who"></p>
       <p class="r-pctlab">共 鸣 度</p>
@@ -540,7 +540,7 @@ function finish(){
 
 
   document.getElementById('r-persona').innerHTML=c.persona.split('').map(function(ch){return '<i>'+ch+'</i>';}).join('');
-  document.getElementById('r-who').textContent='你与《兰香如故》里的【'+NAME[bi]+'】';
+  document.getElementById('r-who').textContent='你与【'+NAME[bi]+'】';
   document.getElementById('r-pct').innerHTML=p1+'<small>%</small>';
   document.getElementById('r-verdict').textContent=c.verdict;
   document.getElementById('r-analysis').textContent=c.analysis;
