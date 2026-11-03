@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>测测你是《后会友期》里的谁</title>
+<style>
+  :root{
+    --paper:#F6F1E9;        /* 暖白纸底 */
+    --card:#FFFDF8;         /* 卡片暖白 */
+    --ink:#322E28;          /* 墨字 */
+    --ink-soft:#6E655A;     /* 次级字（WCAG AA）*/
+    --accent:#C2674A;       /* 赤陶红（品牌主色）*/
+    --accent-2:#E08A66;     /* 浅赤陶（渐变）*/
+    --gold:#E0A93B;         /* 暖金（综艺点缀）*/
+    --accent-soft:rgba(194,103,74,0.10);
+    --line:rgba(50,46,40,0.14);
+    --font:'PingFang SC','Microsoft YaHei','Hiragino Sans GB','Noto Sans SC',sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    background:
+      radial-gradient(130% 70% at 50% -8%, rgba(255,250,240,0.9) 0%, rgba(255,250,240,0) 55%),
+      var(--paper);
+    background-attachment:fixed;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.7;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:480px;margin:0 auto;padding:64px 20px 96px;}
+
+  /* 顶部进度圆点（综艺进度感） */
+  .pprog{position:fixed;top:12px;left:0;right:0;z-index:50;margin:0 auto;width:max-content;
+    display:flex;align-items:center;gap:8px;background:rgba(255,253,248,0.92);
+    padding:8px 14px;border-radius:22px;box-shadow:0 4px 16px rgba(70,50,30,0.14);
+    border:1px solid var(--line);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  .pprog .lab{font-size:11px;color:var(--ink-soft);letter-spacing:1px;margin-right:2px;}
+  .pprog i{width:9px;height:9px;border-radius:50%;background:rgba(50,46,40,0.16);transition:all .3s ease;}
+  .pprog i.on{background:var(--accent);transform:scale(1.18);}
+  .pprog i.cur{box-shadow:0 0 0 3px rgba(194,103,74,0.20);}
+
+  /* 花边：线 + 菱形 + 文字 */
+  .flourish{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto;}
+  .flourish i{flex:0 1 64px;height:1px;background:linear-gradient(90deg,transparent,var(--line));}
+  .flourish i:last-child{background:linear-gradient(90deg,var(--line),transparent);}
+  .flourish b{width:7px;height:7px;background:var(--accent);transform:rotate(45deg);border-radius:1px;flex:0 0 auto;}
+  .flourish span{font-size:12px;letter-spacing:4px;color:var(--ink-soft);white-space:nowrap;}
+
+  /* 首页 hero */
+  .hero{
+    background:var(--card);border:1px solid var(--line);border-radius:22px;
+    padding:30px 24px 30px;margin:8px 0 6px;position:relative;overflow:hidden;
+    box-shadow:0 12px 34px rgba(70,50,30,0.10);
+  }
+  .pill{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;font-size:12px;font-weight:600;letter-spacing:1px;padding:6px 14px;border-radius:20px;
+    position:relative;z-index:3;box-shadow:0 4px 12px rgba(194,103,74,0.30);}
+  .hero .flourish{margin:16px auto 16px;}
+  h1.title{
+    font-size:clamp(21px,6vw,26px);line-height:1.35;font-weight:800;text-align:center;
+    margin:0 0 14px;color:var(--ink);white-space:nowrap;letter-spacing:.5px;
+  }
+  .hook{font-size:15px;text-align:center;color:var(--ink);margin:0 0 10px;line-height:1.7;}
+  .lead{font-size:13.5px;text-align:center;color:var(--ink-soft);margin:0 auto 24px;max-width:360px;line-height:1.8;}
+  .spark{position:absolute;color:var(--gold);opacity:.55;z-index:2;pointer-events:none;}
+  .spark.s1{top:14px;right:18px;font-size:22px;transform:rotate(12deg);}
+  .spark.s2{bottom:54px;left:16px;font-size:17px;transform:rotate(-8deg);opacity:.45;}
+  .spark.s3{top:120px;left:20px;font-size:14px;opacity:.4;}
+  .spark.s4{bottom:20px;right:24px;font-size:18px;transform:rotate(20deg);opacity:.5;}
+
+  .btn{
+    display:block;width:100%;border:none;border-radius:30px;padding:15px 0;font-size:17px;margin:0;
+    font-family:var(--font);font-weight:700;cursor:pointer;position:relative;z-index:3;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;box-shadow:0 8px 20px rgba(194,103,74,0.32);transition:transform .15s ease,box-shadow .15s ease;
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  }
+  .btn:active{transform:translateY(1px) scale(.99);box-shadow:0 4px 12px rgba(194,103,74,0.26);}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);box-shadow:none;font-weight:500;font-size:15px;}
+  .footnote{font-size:11px;text-align:center;color:var(--ink-soft);opacity:.85;margin:20px 0 0;}
+
+  /* 题目分隔 */
+  .divider{display:flex;align-items:center;justify-content:center;gap:12px;max-width:430px;margin:30px auto 6px;}
+  .divider i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line) 40%,var(--line) 60%,transparent);}
+  .divider b{width:8px;height:8px;background:var(--accent);transform:rotate(45deg);border-radius:1px;flex:0 0 auto;}
+
+  /* 题目 */
+  .q{margin:28px 0;}
+  .q-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .q-num{font-size:14px;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+    flex:0 0 auto;box-shadow:0 4px 9px rgba(194,103,74,0.30);margin-top:1px;}
+  .q-text{font-size:17px;line-height:1.6;color:var(--ink);font-weight:700;text-align:left;}
+  .opt{
+    display:block;width:100%;text-align:left;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);border-radius:14px;
+    padding:14px 18px;margin:10px 0;font-size:15.5px;line-height:1.6;cursor:pointer;
+    transition:all .15s ease;font-family:var(--font);box-shadow:0 1px 4px rgba(70,50,30,0.05);
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  }
+  .opt:active{transform:scale(.99);}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1.5px var(--accent) inset;color:var(--ink);font-weight:600;}
+  .opt.sel::after{content:"✓";float:right;color:var(--accent);font-weight:800;}
+
+  .floating{position:fixed;left:20px;right:20px;bottom:22px;z-index:40;display:none;}
+  .floating.show{display:block;}
+
+  /* 结果页 —— 综艺「嘉宾牌」 */
+  #result{display:none;}
+  .res-card{
+    background:var(--card);border:1px solid var(--line);border-radius:22px;
+    box-shadow:0 16px 44px rgba(70,50,30,0.14);
+    margin:34px 0 0;position:relative;overflow:hidden;
+  }
+  .res-band{background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    padding:26px 20px 22px;text-align:center;position:relative;}
+  .res-band .k{font-size:12px;letter-spacing:3px;color:rgba(255,248,238,0.92);}
+  .res-name{font-size:30px;font-weight:800;color:#fff;margin-top:6px;letter-spacing:1px;
+    text-shadow:0 2px 10px rgba(60,20,8,0.30);}
+  .res-bodywrap{padding:22px 24px 26px;position:relative;}
+  .jinju{font-size:20px;line-height:1.7;color:var(--accent);font-weight:800;text-align:center;
+    margin:6px auto 16px;max-width:92%;background:rgba(224,169,59,0.12);
+    border:1.5px dashed var(--gold);border-radius:14px;padding:12px 14px;}
+  .hero-art{display:block;width:100%;max-width:300px;margin:2px auto 4px;height:auto;}
+  .band-art{position:absolute;top:14px;right:16px;width:58px;height:58px;z-index:5;opacity:.92;}
+  .res-divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:6px 0 14px;}
+  .res-divider i{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);}
+  .res-divider b{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);border-radius:1px;flex:0 0 auto;}
+  .resonate{display:flex;align-items:baseline;gap:8px;justify-content:center;margin:0 0 6px;}
+  .resonate .lv{font-size:34px;color:var(--accent);font-weight:800;line-height:1;}
+  .resonate .tx{font-size:12.5px;color:var(--ink-soft);}
+  .res-body{font-size:14.5px;line-height:1.95;color:var(--ink);opacity:.96;margin-top:14px;}
+  .res-actions{display:flex;gap:12px;margin-top:22px;}
+  .res-actions .btn{flex:1;}
+
+  /* 分享遮罩 */
+  .mask{position:fixed;inset:0;background:rgba(34,26,18,0.86);z-index:60;display:none;align-items:center;justify-content:center;padding:24px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .mask.show{display:flex;}
+  .mask-inner{width:100%;max-width:340px;text-align:center;}
+  #shareImg{width:100%;max-width:300px;border-radius:10px;box-shadow:0 14px 44px rgba(0,0,0,0.5);display:block;margin:0 auto;background:#fff;}
+  .mask-tip{font-size:13px;color:rgba(255,248,238,0.85);margin-top:16px;line-height:1.6;}
+  .mask-tip b{color:#E08A66;}
+  .mask .btn{margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="pprog" id="pprog"><span class="lab">进度</span></div>
+<div class="wrap">
+
+  <!-- 首页 + 题目（同一长页，滚动即做） -->
+  <section id="quiz">
+    <div class="hero">
+      <span class="spark s1">✦</span><span class="spark s2">✧</span>
+      <span class="spark s3">✦</span><span class="spark s4">✧</span>
+      <div style="text-align:center;"><span class="pill">《后会友期》同款人格测试</span></div>
+      <svg class="hero-art" viewBox="0 0 300 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M0 82 L46 50 L92 78 L140 42 L188 76 L240 48 L300 74 L300 100 L0 100 Z" stroke="#C2674A" stroke-opacity="0.30" stroke-width="1.5"/>
+        <rect x="66" y="52" width="158" height="30" rx="9" stroke="#C2674A" stroke-opacity="0.55" stroke-width="2" fill="#FFFDF8"/>
+        <rect x="80" y="60" width="22" height="14" rx="3" fill="#C2674A" fill-opacity="0.16"/>
+        <rect x="112" y="60" width="22" height="14" rx="3" fill="#C2674A" fill-opacity="0.16"/>
+        <rect x="144" y="60" width="22" height="14" rx="3" fill="#C2674A" fill-opacity="0.16"/>
+        <rect x="176" y="60" width="22" height="14" rx="3" fill="#C2674A" fill-opacity="0.16"/>
+        <circle cx="92" cy="84" r="5" stroke="#C2674A" stroke-opacity="0.55" stroke-width="2"/>
+        <circle cx="198" cy="84" r="5" stroke="#C2674A" stroke-opacity="0.55" stroke-width="2"/>
+        <g stroke="#322E28" stroke-opacity="0.5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+          <circle cx="135" cy="20" r="7"/>
+          <path d="M135 28 L135 44 M135 33 L126 39 M135 33 L144 39 M135 44 L129 56 M135 44 L141 56"/>
+          <circle cx="161" cy="20" r="7"/>
+          <path d="M161 28 L161 44 M161 33 L152 39 M161 33 L170 39 M161 44 L155 56 M161 44 L167 56"/>
+        </g>
+      </svg>
+      <div class="flourish"><i></i><b></b><span>后 会 友 期</span><b></b><i></i></div>
+      <h1 class="title">测测你是《后会友期》里的谁</h1>
+      <p class="hook">有些老朋友，断联多年，你以为早翻篇了。</p>
+      <p class="lead">再见旧友，六个瞬间，哪一幕里的你最眼熟？6 道题，1 分钟，测测你是哪一挂老友。</p>
+      <button class="btn" id="startBtn">开始测试</button>
+    </div>
+    <p class="footnote">本测试仅供娱乐，老朋友的事，你自己最清楚。</p>
+
+    <div class="divider"><i></i><b></b><i></i></div>
+
+    <div id="questions"></div>
+  </section>
+
+  <!-- 结果页 -->
+  <section id="result">
+    <div class="res-card">
+      <div class="res-band">
+        <svg class="band-art" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g stroke="#FFF8EE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="22" cy="18" r="7"/>
+            <path d="M22 26 L22 42 M22 31 L14 37 M22 31 L30 37 M22 42 L16 54 M22 42 L28 54"/>
+            <circle cx="40" cy="18" r="7"/>
+            <path d="M40 26 L40 42 M40 31 L32 37 M40 31 L48 37 M40 42 L34 54 M40 42 L46 54"/>
+          </g>
+        </svg>
+        <div class="k">你 的 友 情 人 格</div>
+        <div class="res-name" id="resTitle"></div>
+      </div>
+      <div class="res-bodywrap">
+        <div class="jinju" id="resJinju"></div>
+        <div class="res-divider"><i></i><b></b><i></i></div>
+        <div class="resonate"><span class="lv" id="resoVal"></span><span class="tx">共鸣度</span></div>
+        <div class="res-body" id="resBody"></div>
+        <div class="res-actions">
+          <button class="btn" id="shareBtn">生成我的分享卡</button>
+          <button class="btn ghost" id="againBtn">重新选一次</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<button class="btn floating" id="floatingBtn">看结果</button>
+
+<div class="mask" id="mask">
+  <div class="mask-inner">
+    <img id="shareImg" alt="分享卡" />
+    <p class="mask-tip" id="maskTip">长按图片保存，或转发给那个走散了的老朋友。</p>
+    <button class="btn ghost" id="maskClose">收起</button>
+  </div>
+</div>
+
+<script>
+/* ===== 数据：单一信源 = 题库 v20 + 纯净版去AI味文案 ===== */
+const PEOPLE = [
+  {name:'厉娜', jinju:'委屈攒得久，放得也干脆。',
+   tags:['恩怨分明','松弛坦荡','表面白眼'],
+   body:'那些委屈你摁了很多年，从没拿出来吓过谁。别人追着要说法，你先把菜盘推过去，该吃吃该睡睡——火车上你照样睡得安稳，旁人闹翻天你都不带操心。你恩怨分明，却不是小肚鸡肠的人，表面给个白眼，转头还是认这个朋友。真到摊开那天，你不躲，话讲完就翻篇。你说不出口的，时间替你说完了。'},
+  {name:'许飞', jinju:'越想翻篇，越记得。',
+   tags:['逻辑清楚','真诚念旧','画地为牢'],
+   body:'有些话在心里排练了十几年，真到嘴边还是说不清。那句「我画地为牢」后来成了大家的段子，你说出来的那天，是真困住了。一盘西红柿炒蛋你记得，他那天穿什么你也记得。你不绕弯子，逻辑清楚，话总能说到点子上，可偏偏最不会绕的人，最容易在感情里卡住。你不是放不下，是想好好告个别，哪怕只对自己说一声。'},
+  {name:'张萌', jinju:'攒了十年的小礼物，一只也没送出去。',
+   tags:['热忱外放','独立通透','随身充电宝'],
+   body:'朋友走了十年，你每到一处还顺手买件小礼物，包装纸放黄了也没送出。你压根没算过值不值，就想把人拢在一块儿。谁半夜不舒服，你推门就进，白天吵过什么全忘了。你像块随身充电宝，谁没电了你都在，待人真心从来不记账。你热忱外放，也独立通透，别人剑拔弩张的时候，你总能轻飘飘一句话把气氛接住——善良的人，连缓冲都是下意识的。'},
+  {name:'马天宇', jinju:'不勉强自己，也不勉强别人。',
+   tags:['温柔松弛','边界感','独处体面'],
+   body:'你通讯录翻到底，密友那一栏空着。低谷时宁可跟 AI 聊两句，也不想麻烦谁。你太清楚自己要多少空间，真朋友不会因为这个走掉，你也从不拿关系去绑人。你温柔通透，情绪都摊在脸上，不掩饰也不勉强，跟哥们儿互相打趣的样子比谁都松弛。独处对你来说不是冷漠，是 i 人最后的体面。你给彼此留了退路，也包括你自己。'},
+  {name:'文吉儿', jinju:'账算清楚了，才算对得起这段关系。',
+   tags:['理性清醒','有理较真','心里有本账'],
+   body:'你心里有本账，八年前的转账记录还留着，受不了事情糊里糊涂过去。轮到你说话，你把话讲完，别人插嘴，一句「现在是我发言的环节」就挡回去。你理性清醒，书读得多，看事看得透，较真的是你，把关系当回事的也是你。你这种较真是有理有据的，不肯糊弄自己，也不肯被谁糊弄——先把账算明白，才敢说放下。'},
+  {name:'王子璇', jinju:'嘴上最凶，夜里最先到场。',
+   tags:['真实纯粹','嘴硬心软','夜里到场'],
+   body:'你希望别人提起你，只记得一个词：真实。怕对方一个人闷，你把自己的朋友介绍过去。后来「唯一」的位置换了人，你就安静了，不争不抢，也不肯演。白天吵得最凶的是你，夜里第一个跑去拿氧气瓶的也是你。嘴上算得清，身体从来不算。你就是嘴硬，心软得拦都拦不住。'},
+  {name:'青稚', jinju:'一句对不起，就能继续往前走。',
+   tags:['直球少年','天真真心','心愿清单'],
+   body:'有话当场说，不攒着过夜。该道歉就一句「对不起」，不铺垫不解释；想继续一起走，直接说「我希望」。吵完还能坐回同一张桌子，因为你不大记仇。你直率得像根香蕉，天真却捧着一颗真心，看不懂对方情绪也不装懂。主动迈出的那一步，是你写下的五件心愿清单——这股直球劲儿，成年人学不会，体面谁都会，那点少年气难得。'},
+  {name:'白小纯', jinju:'礼物放床头，一个字不提。',
+   tags:['嘴硬心软','傲娇真诚','手是真心'],
+   body:'你嘴上没饶过谁，「能别放屁吗」说得干脆，转头又叮嘱人家早点休息。水递到手边，礼物悄悄搁床头，谎称没准备，转头就摆出来。你不要什么正式道歉，对方肯认一句，你就够了。你是一本摊开的书，情绪全在脸上，嘴硬是因为在乎，手软也是因为在乎——嘴强王者本王，嘴是铠甲，手是真心。傲娇是真的，委屈也是真的，可那份真诚，一点没掺水。'},
+];
+
+/* 六题（纯净版重排顺序），每个选项指向 PEOPLE 下标 */
+const QUESTIONS = [
+  {q:'多年未见的朋友拖着行李箱下车。你的第一反应是什么？', opts:[
+    {t:'你们要去就去吧，我不去', p:0},
+    {t:'主动帮忙搬行李，吐槽「箱子好重」', p:3},
+    {t:'主动迎上去，问「你要抱抱我吗」', p:4},
+    {t:'心里忐忑，但还是上前帮搬行李', p:6},
+  ]},
+  {q:'刚到民宿准备吃饭，有人捂着胸口说自己高反。你会怎么做？', opts:[
+    {t:'饭还得按时吃，自己上楼吃饭', p:3},
+    {t:'犹豫一下，还是跑上楼找糖给病号', p:1},
+    {t:'贴身照顾，帮忙贴暖宝宝、盛饭、拿氧气袋', p:5},
+    {t:'默默做工具人，帮忙递水、打电话', p:7},
+  ]},
+  {q:'给老朋友写了一封信，你信里会写什么？', opts:[
+    {t:'我把你弄丢了，还能把你找回来么', p:2},
+    {t:'我无法面对站在对立面的人是你', p:1},
+    {t:'她是我在万千世界里，第一次笃定的真心', p:4},
+    {t:'做你朋友不后悔，开心但痛', p:6},
+  ]},
+  {q:'你心目中的满分朋友是什么样的？', opts:[
+    {t:'愿意为你撑腰，听你说完', p:0},
+    {t:'待人真诚、不欺骗、不背后议论', p:2},
+    {t:'轻松开心，不用小心翼翼', p:5},
+    {t:'必须随叫随到，随时都在', p:7},
+  ]},
+  {q:'和朋友断联之后，你会偷偷做什么？', opts:[
+    {t:'收集他喜欢的小礼物，有机会再送给他', p:2},
+    {t:'写歌给他，被问起来就说没有', p:1},
+    {t:'和他的聊天记录和转账记录，一条没删', p:4},
+    {t:'他生日那天，悄悄去他直播间刷礼物', p:7},
+  ]},
+  {q:'一段老友情走散了，你最可能是下面哪种？', opts:[
+    {t:'我不主动，等对方先来问为什么', p:0},
+    {t:'该断就断，删了干净不回头', p:3},
+    {t:'不联系却总翻她的动态', p:5},
+    {t:'嘴上说绝交，心里还是想和好', p:6},
+  ]},
+];
+
+const answers = new Array(QUESTIONS.length).fill(-1);
+
+/* ===== 进度圆点 ===== */
+const pprog = document.getElementById('pprog');
+for(let i=0;i<QUESTIONS.length;i++){
+  const d=document.createElement('i'); d.dataset.i=i; pprog.appendChild(d);
+}
+const pdots = ()=>Array.from(pprog.querySelectorAll('i'));
+
+/* ===== 渲染题目 ===== */
+const qBox = document.getElementById('questions');
+QUESTIONS.forEach((Q, qi)=>{
+  const sec = document.createElement('div');
+  sec.className = 'q';
+  sec.innerHTML = `<div class="q-head"><div class="q-num">${qi+1}</div><div class="q-text">${Q.q}</div></div>`;
+  Q.opts.forEach((o, oi)=>{
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = o.t;
+    b.dataset.q = qi; b.dataset.o = oi;
+    b.addEventListener('click', ()=>selectOpt(qi, oi, b));
+    sec.appendChild(b);
+  });
+  qBox.appendChild(sec);
+});
+
+function selectOpt(qi, oi, el){
+  answers[qi] = QUESTIONS[qi].opts[oi].p;
+  const sec = el.closest('.q');
+  sec.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+function updateProgress(){
+  const done = answers.filter(a=>a>=0).length;
+  document.getElementById('bar') && (document.getElementById('bar').style.width = (done/QUESTIONS.length*100)+'%');
+  const dots = pdots();
+  dots.forEach((d,i)=>{
+    d.classList.toggle('on', i<done);
+    d.classList.toggle('cur', i===done);
+  });
+  if(done === QUESTIONS.length){
+    document.getElementById('floatingBtn').classList.add('show');
+  } else {
+    document.getElementById('floatingBtn').classList.remove('show');
+  }
+}
+
+/* ===== 滚动 ===== */
+document.getElementById('startBtn').addEventListener('click', ()=>{
+  document.getElementById('questions').scrollIntoView({behavior:'smooth'});
+});
+document.getElementById('floatingBtn').addEventListener('click', showResult);
+document.getElementById('againBtn').addEventListener('click', resetAll);
+
+/* ===== 计分 ===== */
+function calc(){
+  const score = new Array(8).fill(0);
+  const qsum  = new Array(8).fill(0);
+  const hits  = new Array(8).fill(0);
+  answers.forEach((p, qi)=>{
+    if(p>=0){ score[p]+=2; qsum[p]+=(qi+1); hits[p]+=1; }
+  });
+  let max=-1, winners=[];
+  score.forEach((s,i)=>{ if(s>max){max=s;winners=[i];} else if(s===max) winners.push(i); });
+  let win = winners[0];
+  if(winners.length>1){
+    let best=-1;
+    winners.forEach(i=>{ if(qsum[i]>best){best=qsum[i];win=i;} });
+  }
+  const hit = hits[win];
+  const resonate = hit>=3?97:hit===2?89:80;
+  return {win, hit, resonate, score};
+}
+
+function showResult(){
+  if(answers.some(a=>a<0)){
+    document.getElementById('floatingBtn').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  const r = calc();
+  const P = PEOPLE[r.win];
+  document.getElementById('resTitle').textContent = P.name+'型';
+  document.getElementById('resJinju').textContent = P.jinju;
+  document.getElementById('resBody').textContent = P.body;
+  document.getElementById('resoVal').textContent = r.resonate+'%';
+  document.getElementById('floatingBtn').classList.remove('show');
+
+  document.getElementById('result').style.display='block';
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  window.__last = r;
+}
+
+function resetAll(){
+  answers.fill(-1);
+  document.querySelectorAll('.opt.sel').forEach(x=>x.classList.remove('sel'));
+  document.getElementById('result').style.display='none';
+  updateProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ===== 分享卡（Canvas 真渲染 · 综艺嘉宾牌风） ===== */
+document.getElementById('shareBtn').addEventListener('click', genShare);
+document.getElementById('maskClose').addEventListener('click', ()=>document.getElementById('mask').classList.remove('show'));
+
+function genShare(){
+  const r = window.__last; if(!r) return;
+  const P = PEOPLE[r.win];
+  const W=750, H=1020, S=2;
+  const cv=document.createElement('canvas');
+  cv.width=W*S; cv.height=H*S;
+  const c=cv.getContext('2d');
+  c.scale(S,S);
+
+  // 纸底
+  c.fillStyle='#F6F1E9'; c.fillRect(0,0,W,H);
+  // 外细边框（赤陶）
+  c.strokeStyle='#C2674A'; c.lineWidth=2; c.strokeRect(30,30,W-60,H-60);
+  c.strokeStyle='rgba(194,103,74,0.35)'; c.lineWidth=1; c.strokeRect(40,40,W-80,H-80);
+
+  const cx=W/2;
+  // 顶部头带
+  const bg=c.createLinearGradient(0,30,0,180);
+  bg.addColorStop(0,'#C2674A'); bg.addColorStop(1,'#E08A66');
+  c.fillStyle=bg; c.fillRect(40,40,W-80,150);
+  c.fillStyle='rgba(255,248,238,0.92)'; c.font='500 24px "PingFang SC",sans-serif';
+  c.textAlign='center'; c.textBaseline='alphabetic';
+  c.fillText('你 的 友 情 人 格', cx, 100);
+  c.fillStyle='#FFFFFF'; c.font='800 60px "PingFang SC","Microsoft YaHei",sans-serif';
+  c.fillText(P.name+'型', cx, 165);
+
+  // 金句（居中换行，金色虚线框）
+  c.fillStyle='#322E28'; c.font='700 40px "PingFang SC","Microsoft YaHei",sans-serif';
+  c.textAlign='center'; c.textBaseline='middle';
+  wrapText(c, P.jinju, cx, 300, W-220, 56);
+
+  // 关键词（金色）
+  c.fillStyle='#E0A93B'; c.font='600 26px "PingFang SC",sans-serif';
+  c.textBaseline='alphabetic';
+  c.fillText('关键词  '+P.tags.join('  ｜  '), cx, 410);
+
+  // 共鸣度
+  drawDivider(c, 120, 470, W-240);
+  c.fillStyle='#C2674A'; c.font='800 40px "PingFang SC",sans-serif';
+  c.fillText('共鸣度 '+r.resonate+'%', cx, 535);
+
+  // 引导语
+  c.fillStyle='#6E655A'; c.font='400 23px "PingFang SC",sans-serif';
+  wrapText(c,'做完这六道题，你大概会想起一个人。把卡转给他，不用说话，让他自己看像谁。', cx, 600, W-180, 36);
+
+  // 落款
+  c.fillStyle='#9A8E7E'; c.font='400 22px "PingFang SC",sans-serif';
+  c.textAlign='center';
+  c.fillText('测测你是《后会友期》里的谁', cx, H-72);
+
+  const url=cv.toDataURL('image/png');
+  document.getElementById('shareImg').src=url;
+
+  const ua=navigator.userAgent;
+  const wechat=/MicroMessenger/i.test(ua), ios=/iPhone|iPad|iPod/i.test(ua);
+  const tip=document.getElementById('maskTip');
+  if(wechat||ios){
+    tip.innerHTML='<b>长按图片保存</b>，或转发给那个走散了的老朋友。';
+  } else {
+    tip.innerHTML='点击图片可保存，或长按转发给那个走散了的老朋友。';
+    const img=document.getElementById('shareImg');
+    img.onclick=()=>{const a=document.createElement('a');a.href=url;a.download='后会友期_'+P.name+'型.png';a.click();};
+  }
+  document.getElementById('mask').classList.add('show');
+}
+
+/* 细线 + 中心菱形 装饰分隔 */
+function drawDivider(c, x, y, w){
+  c.save();
+  c.strokeStyle='rgba(194,103,74,0.45)'; c.lineWidth=1.5;
+  c.beginPath(); c.moveTo(x, y); c.lineTo(x+w/2-12, y); c.stroke();
+  c.beginPath(); c.moveTo(x+w/2+12, y); c.lineTo(x+w, y); c.stroke();
+  c.fillStyle='#E0A93B';
+  c.translate(x+w/2, y); c.rotate(Math.PI/4);
+  c.fillRect(-5,-5,10,10);
+  c.restore();
+}
+
+function wrapText(c,text,cx,cy,maxW,lh){
+  const chars=text.split('');
+  let line='', y=cy;
+  for(let i=0;i<chars.length;i++){
+    const test=line+chars[i];
+    if(c.measureText(test).width>maxW && line){
+      c.fillText(line,cx,y); line=chars[i]; y+=lh;
+    } else line=test;
+  }
+  if(line) c.fillText(line,cx,y);
+}
+</script>
+</body>
+</html>
